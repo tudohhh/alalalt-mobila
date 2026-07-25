@@ -34,6 +34,37 @@ export const CONFIG_TAMPLAR = {
     "ROKO (riflaj)":   { hex: "#d4c5b0", tex: null, pretMp: 180, clasa: "mdf_infoliat" },
     "Front riflat":    { hex: "#c9b89e", tex: null, pretMp: 300, clasa: "mdf_infoliat" },
     "Oglinda montata": { hex: "#c0c8d0", tex: null, pretMp: 185, clasa: "mdf_vopsit" },
+
+
+  blaturi: {
+    "Fără blat": { hex: "#e8e4dd" },
+    "PAL melaminat": { hex: "#c9a36a" },
+    "PAL uni": { hex: "#d8c9b0" },
+    "PAL lucios": { hex: "#ececea" },
+    "MDF": { hex: "#7d8a6f" },
+    "HPL compact": { hex: "#8a7f72" },
+  },
+
+  accesoriiCategorii: {
+    "Balamale": {
+      "Hafele": { pret: 6, regula: "perUsa" },
+      "Blum": { pret: 12, regula: "perUsa" },
+    },
+    "Sertare": {
+      "Sertar metalic soft-close": { pret: 45, regula: "perSertar" },
+      "Sertar cu pereti din PAL": { pret: 25, regula: "perSertar" },
+    },
+    "Sisteme de ridicare": {
+      "Aventos HL": { pret: 120, regula: "perUsa" },
+      "Aventos HK-XS": { pret: 70, regula: "perUsa" },
+    },
+    "Picioare & plinte": {
+      "Picioare reglabile H120": { pret: 5, regula: "perCorp" },
+      "Plinta": { pret: 120, regula: "fix" },
+      "Piston ridicare 100N": { pret: 12.4, regula: "perUsa" },
+    },
+  },
+
   },
 
   accesorii: {
