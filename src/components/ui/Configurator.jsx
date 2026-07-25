@@ -1,7 +1,7 @@
-// src/Configurator-v2.jsx — UI "showroom": scena 3D erou full-screen,
+// src/Configurator.jsx — UI "showroom": scena 3D erou full-screen,
 // panouri plutitoare cu blur, mostre de material, pret animat, tipografie
 // Fraunces, deviz pliabil, tranzitii intre faze.
-// Foloseste: CONFIG-v2.1.js, calcul-v2.js, Scena3D-v2.jsx, Formular.jsx, Bucatarie.jsx
+// Foloseste: CONFIG-v2.1.js, calcul-v2.js, Scena3D.jsx, Formular.jsx, Bucatarie.jsx
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { CONFIG_TAMPLAR as C } from "../../config/CONFIG.js";
 import { calculeaza, umRegula } from "../../utils/calcul.js";
