@@ -1,6 +1,6 @@
 // src/Formular.jsx — pas final: date livrare -> fișă tehnică
 import React, { useState } from "react";
-import { CONFIG as C } from "../../config/CONFIG.js";
+import { CONFIG_TAMPLAR as C } from "../../config/CONFIG.js";
 
 const lei=n=>Math.round(n).toLocaleString("ro-RO")+" lei";
 
