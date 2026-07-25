@@ -1,6 +1,9 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import Configurator from "./Configurator-v2.jsx";
-createRoot(document.getElementById("root")).render(<Configurator />);
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './components/ui/Configurator.jsx';
 
-// FORCE REBUILD - 1785011370
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
