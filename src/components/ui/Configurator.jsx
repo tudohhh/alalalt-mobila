@@ -3,7 +3,7 @@
 // Fraunces, deviz pliabil, tranzitii intre faze.
 // Foloseste: CONFIG-v2.1.js, calcul-v2.js, Scena3D-v2.jsx, Formular.jsx, Bucatarie.jsx
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { CONFIG as C } from "../../config/CONFIG.js";
+import { CONFIG_TAMPLAR as C } from "../../config/CONFIG.js";
 import { calculeaza, umRegula } from "../../utils/calcul.js";
 import Scena3D from "../3d/Scena3D.jsx";
 import Formular from "../ui/Formular.jsx";
