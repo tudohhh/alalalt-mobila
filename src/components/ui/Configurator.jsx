@@ -6,7 +6,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { CONFIG as C } from "../../config/CONFIG.js";
 import { calculeaza, umRegula } from "../../utils/calcul.js";
 import Scena3D from "../3d/Scena3D.jsx";
-import Formular from "./Formular.jsx";
+import Formular from "../ui/Formular.jsx";
 import Bucatarie from "../3d/Bucatarie.jsx";
 
 // ——— tipografie: Fraunces pentru display, injectat o singura data ———
