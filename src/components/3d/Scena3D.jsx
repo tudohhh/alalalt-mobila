@@ -374,13 +374,7 @@ export default function Scena3D({ cfg, tip, onReady }){
     const plinta=new THREE.Mesh(new THREE.BoxGeometry(30,0.09,0.012),new THREE.MeshStandardMaterial({color:"#dcd5c8",roughness:0.8}));
     plinta.position.set(0,0.045,-D/2-0.02);scene.add(plinta);
     // // eliminat vizibila pe peretele din spate (lumina in cadru)
-    const _wz=-D/2-0.03, _wy=Math.max(1.35,Htot*0.6);
-    const _fm=new THREE.MeshStandardMaterial({color:"#2b2621",roughness:0.7,metalness:0});
-    const _fram=new THREE.Mesh(new THREE.PlaneGeometry(1.36,1.56),_fm);_fram.position.set(0,_wy,_wz);scene.add(_fram);
-    const _win=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.4),new THREE.MeshBasicMaterial({color:"#fff4e6"}));_win.position.set(0,_wy,_wz+0.004);scene.add(_win);
-    const _bV=new THREE.Mesh(new THREE.BoxGeometry(0.035,1.4,0.02),_fm);_bV.position.set(0,_wy,_wz+0.012);scene.add(_bV);
-    const _bH=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.035,0.02),_fm);_bH.position.set(0,_wy,_wz+0.012);scene.add(_bH);
-    // parchet: dungi late discrete (cached)
+    const _fram=new THREE.Mesh(new THREE.PlaneGeometry(1.36,1.56),_fm);_fram.position.set(0,_wy,_wz);const _win=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.4),new THREE.MeshBasicMaterial({color:"#fff4e6"}));_win.position.set(0,_wy,_wz+0.004);const _bV=new THREE.Mesh(new THREE.BoxGeometry(0.035,1.4,0.02),_fm);_bV.position.set(0,_wy,_wz+0.012);const _bH=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.035,0.02),_fm);_bH.position.set(0,_wy,_wz+0.012);// parchet: dungi late discrete (cached)
     const ptx=_parchetTex();
     const floor=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.MeshStandardMaterial({map:ptx,roughness:0.42,metalness:0.06,envMapIntensity:0.6}));
     floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
