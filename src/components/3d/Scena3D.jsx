@@ -444,7 +444,7 @@ export default function Scena3D({ cfg, tip, onReady }){
     const _frontDecor=_woodDecorFor(materialExt);
     const matGap=new THREE.MeshBasicMaterial({color:0x151210});      // rostul (shadow gap)
     const matMet=new THREE.MeshStandardMaterial({color:0x232323,roughness:0.3,metalness:0.9});
-    const matSticla=new THREE.MeshPhysicalMaterial({color:0xd7e8ec,roughness:0.05,metalness:0,transparent:true,opacity:0.16,clearcoat:1});
+    const // matSticla eliminat=new THREE.MeshPhysicalMaterial({color:0xd7e8ec,roughness:0.05,metalness:0,transparent:true,opacity:0.16,clearcoat:1});
     const g=new THREE.Group();
     const box=(w,h,d,x,y,z,m)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m||matExt);me.position.set(x,y,z);me.castShadow=true;me.receiveShadow=true;g.add(me);return me;};
     // front cu CANT: fata din materialul ales, muchiile din cant (mai inchis, satinat)
@@ -502,7 +502,7 @@ export default function Scena3D({ cfg, tip, onReady }){
         box(gw,fw,0.018,xc,yUsiJos+gap+fw/2,frontZ);
         box(fw,gh-2*fw,0.018,xc-gw/2+fw/2,yC,frontZ);
         box(fw,gh-2*fw,0.018,xc+gw/2-fw/2,yC,frontZ);
-        box(gw-2*fw,gh-2*fw,0.006,xc,yC,frontZ-0.004,matSticla);
+        box(gw-2*fw,gh-2*fw,0.006,xc,yC,frontZ-0.004,// matSticla eliminat);
       }
       // mâner: profil îngust vertical, discret
       const h=new THREE.Mesh(new THREE.BoxGeometry(0.008,Math.min(0.16,usiH*0.3),0.012),matMet);
