@@ -87,6 +87,21 @@ export const CONFIG_TAMPLAR = {
     },
   },
 
+
+  consumabile: {
+    cantABS18: 1.0,
+    cantPF18: 1.0,
+    cantPFL: 1.0,
+    cantMDF: 1.0,
+    cantHPL: 1.0,
+    cantBlat: 1.0,
+    cantGlisare: 1.0,
+    cantSertare: 1.0,
+    cantBalamale: 1.0,
+    cantPicioare: 1.0,
+    cantPlinta: 1.0,
+  },
+
   bucatarie: {
     pretMlStandardEur: 1200,
     standardInclude: "blat+contrablat termo 38/10mm, fronturi MDF vopsit drept 1 fata, 4 sertare, balamale soft-close, sertare metalice soft-close, jolly premium, scurgator inox, sertar tacamuri, orice depozitare",
