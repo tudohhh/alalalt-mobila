@@ -444,8 +444,7 @@ export default function Scena3D({ cfg, tip, onReady }){
     const _frontDecor=_woodDecorFor(materialExt);
     const matGap=new THREE.MeshBasicMaterial({color:0x151210});      // rostul (shadow gap)
     const matMet=new THREE.MeshStandardMaterial({color:0x232323,roughness:0.3,metalness:0.9});
-    const // matSticla eliminat=new THREE.MeshPhysicalMaterial({color:0xd7e8ec,roughness:0.05,metalness:0,transparent:true,opacity:0.16,clearcoat:1});
-    const g=new THREE.Group();
+// MeshPhysicalMaterial eliminat
     const box=(w,h,d,x,y,z,m)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m||matExt);me.position.set(x,y,z);me.castShadow=true;me.receiveShadow=true;g.add(me);return me;};
     // front cu CANT: fata din materialul ales, muchiile din cant (mai inchis, satinat)
     const matCant=new THREE.MeshStandardMaterial({color:new THREE.Color((C.materialeCorp[materialExt]||{}).hex||"#c9a36a").multiplyScalar(0.72),roughness:0.35,metalness:0.05});
