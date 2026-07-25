@@ -4,7 +4,7 @@
 // DROP-IN: același API (cfg, tip, onReady) ca Scena3D.jsx.
 import React, { useRef, useEffect } from "react";
 import * as THREE from "three";
-import { CONFIG_TAMPLAR as C } from "../config-tamplar/CONFIG-v2.1.js";
+import { CONFIG as C } from "../../config/CONFIG.js";
 
 const srgbT = t => { if ("colorSpace" in t) t.colorSpace = THREE.SRGBColorSpace; else t.encoding = THREE.sRGBEncoding; return t; };
 
