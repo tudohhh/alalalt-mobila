@@ -85,6 +85,17 @@ function Selector({onPick}){
 }
 
 function Config({tip,inapoi}){
+  console.log("🔍 Config a pornit cu tip:", tip);
+  try {
+    const T = C.tipuri[tip];
+    console.log("🔍 T:", T);
+    if (!T) {
+      console.error("❌ TIPUL", tip, "nu există în C.tipuri");
+      return <div style={{padding:20, color:"red"}}>Eroare: tipul "{tip}" nu este configurat</div>;
+    }
+    const L = T.limite;
+    const d = T.default;
+    console.log("🔍 L:", L, "d:", d);
   const T=C.tipuri[tip],L=T.limite,d=T.default;
   const [latime,setLatime]=useState(d.latime);
   const [inaltime,setInaltime]=useState(d.inaltime);
@@ -214,6 +225,14 @@ function Config({tip,inapoi}){
       </div>
     </div>
   );
+  } catch (err) {
+    console.error("❌ Eroare în Config:", err);
+    return <div style={{padding:20, background:"#ffdddd", border:"2px solid red", margin:20}}>
+      <h3>Eroare</h3>
+      <pre>{err.message}</pre>
+      <pre style={{fontSize:12}}>{err.stack}</pre>
+    </div>;
+  }
 }
 
 const panou={position:"absolute",background:"rgba(255,255,255,.9)",backdropFilter:"blur(10px)",borderRadius:18,padding:"14px 16px",boxShadow:"0 8px 32px rgba(40,30,20,.14)"};
