@@ -2,7 +2,7 @@
 // Acelasi stil vizual cu Configurator.jsx. Foloseste calculeazaBucatarie din calcul-v2.
 import React, { useState, useMemo } from "react";
 import { CONFIG as C } from "../../config/CONFIG.js";
-import { calculeazaBucatarie } from "./calcul-v2.js";
+import { calculeazaBucatarie } from "../../utils/calcul.js";
 import Formular from "../ui/Formular.jsx";
 
 const eur=n=>Math.round(n).toLocaleString("ro-RO")+" €";
