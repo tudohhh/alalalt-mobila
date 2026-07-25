@@ -65,8 +65,7 @@ export default function Configurator(){
 function Selector({onPick}){
   const optiuni=[...Object.entries(C.tipuri).map(([k,t])=>({k,nume:t.nume,sub:"configurare liberă"})),
     {k:"bucatarie",nume:"Bucătărie",sub:"estimare pe metru liniar"}];
-  try {
-    return (
+  return (
     <div className="fz-in" style={{minHeight:"100vh",background:"#f4f1ec",fontFamily:"system-ui,sans-serif",color:"#2a2622",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24}}>
       <div style={{fontSize:11,letterSpacing:3,textTransform:"uppercase",color:"#a37e4a",fontWeight:700}}>Atelier mobilă</div>
       <h1 style={{fontFamily:DISPLAY,fontSize:44,fontWeight:700,margin:"10px 0 6px",letterSpacing:-.5}}>Mobila ta, pe măsura ta.</h1>
@@ -83,13 +82,6 @@ function Selector({onPick}){
       </div>
     </div>
   );
-  } catch (err) {
-    return <div style={{padding: 20, background: "#ffdddd", border: "2px solid red", margin: 20}}>
-      <h3>❌ Eroare în Config</h3>
-      <pre style={{whiteSpace: "pre-wrap", fontSize: 13}}>{err.message}</pre>
-      <pre style={{whiteSpace: "pre-wrap", fontSize: 11, color: "#666"}}>{err.stack}</pre>
-    </div>;
-  }
 }
 
 function Config({tip,inapoi}){
@@ -123,8 +115,7 @@ function Config({tip,inapoi}){
     </div>
   );
 
-  try {
-    return (
+  return (
     <div style={{position:"relative",width:"100vw",height:"100vh",overflow:"hidden",fontFamily:"system-ui,sans-serif",color:"#2a2622",background:"#efeae2"}}>
       {/* SCENA — eroul, pe tot ecranul */}
       <div style={{position:"absolute",inset:0}}>
@@ -177,8 +168,7 @@ function Config({tip,inapoi}){
         {Object.entries(C.accesoriiCategorii).map(([cat,items])=>{
           const nrSel=Object.keys(items).filter(n=>accesoriiSel.includes(n)).length;
           const open=openCat===cat;
-          try {
-    return (
+          return (
             <div key={cat} style={{borderBottom:"1px solid #f0ece5"}}>
               <button onClick={()=>setOpenCat(open?null:cat)} style={{width:"100%",display:"flex",justifyContent:"space-between",padding:"9px 0",background:"none",border:"none",cursor:"pointer",fontSize:12.5,fontWeight:700,color:"#2a2622"}}>
                 <span>{cat} {nrSel>0&&<span style={{color:"#a37e4a",fontSize:11}}>({nrSel})</span>}</span>
@@ -224,13 +214,6 @@ function Config({tip,inapoi}){
       </div>
     </div>
   );
-  } catch (err) {
-    return <div style={{padding: 20, background: "#ffdddd", border: "2px solid red", margin: 20}}>
-      <h3>❌ Eroare în Config</h3>
-      <pre style={{whiteSpace: "pre-wrap", fontSize: 13}}>{err.message}</pre>
-      <pre style={{whiteSpace: "pre-wrap", fontSize: 11, color: "#666"}}>{err.stack}</pre>
-    </div>;
-  }
 }
 
 const panou={position:"absolute",background:"rgba(255,255,255,.9)",backdropFilter:"blur(10px)",borderRadius:18,padding:"14px 16px",boxShadow:"0 8px 32px rgba(40,30,20,.14)"};
