@@ -109,7 +109,8 @@ export default function Scena3D({ cfg, tip, onReady }) {
         box(gw,fw,0.018,xc,yUsiJos+gap+fw/2,frontZ);
         box(fw,gh-2*fw,0.018,xc-gw/2+fw/2,yC,frontZ);
         box(fw,gh-2*fw,0.018,xc+gw/2-fw/2,yC,frontZ);
-        box(gw-2*fw,gh-2*fw,0.006,xc,yC,frontZ-0.004,// matSticla eliminat);
+        // matSticla eliminat
+    box(gw-2*fw,gh-2*fw,0.006,xc,yC,frontZ-0.004);
       }
       // mâner: profil îngust vertical, discret
       const h=new THREE.Mesh(new THREE.BoxGeometry(0.008,Math.min(0.16,usiH*0.3),0.012),matMet);
