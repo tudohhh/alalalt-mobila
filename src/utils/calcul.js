@@ -3,7 +3,7 @@
 // Reguli: pierderi 10% pe placi; cant18 pe TOTI mp placi; carcasa mereu
 // PAL structura; fronturi la pretul materialului ales; Diverse = 1% costuri;
 // balamale = round(H_usa/500) min 2, per usa; polite in geometrie.
-import { CONFIG as C } from "../../config/CONFIG.js";
+import { CONFIG as C } from "../config/CONFIG.js";
 
 const adaos = () => C.adaosGlobal;
 
