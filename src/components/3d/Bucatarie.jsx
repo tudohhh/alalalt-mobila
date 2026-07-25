@@ -1,7 +1,7 @@
 // src/Bucatarie.jsx — configurator BUCATARIE PE ML (modelul Cozma, v2.1)
 // Acelasi stil vizual cu Configurator.jsx. Foloseste calculeazaBucatarie din calcul-v2.
 import React, { useState, useMemo } from "react";
-import { CONFIG as C } from "../../config/CONFIG.js";
+import { CONFIG_TAMPLAR as C } from "../../config/CONFIG.js";
 import { calculeazaBucatarie } from "../../utils/calcul.js";
 import Formular from "../ui/Formular.jsx";
 
