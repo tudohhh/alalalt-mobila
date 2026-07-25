@@ -373,7 +373,7 @@ export default function Scena3D({ cfg, tip, onReady }){
     tavan.rotation.x=Math.PI/2;tavan.position.y=Math.max(2.9,Htot+0.5);scene.add(tavan);
     const plinta=new THREE.Mesh(new THREE.BoxGeometry(30,0.09,0.012),new THREE.MeshStandardMaterial({color:"#dcd5c8",roughness:0.8}));
     plinta.position.set(0,0.045,-D/2-0.02);scene.add(plinta);
-    // fereastra vizibila pe peretele din spate (lumina in cadru)
+    // // eliminat vizibila pe peretele din spate (lumina in cadru)
     const _wz=-D/2-0.03, _wy=Math.max(1.35,Htot*0.6);
     const _fm=new THREE.MeshStandardMaterial({color:"#2b2621",roughness:0.7,metalness:0});
     const _fram=new THREE.Mesh(new THREE.PlaneGeometry(1.36,1.56),_fm);_fram.position.set(0,_wy,_wz);scene.add(_fram);
