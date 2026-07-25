@@ -28,7 +28,7 @@ function _envTex(renderer){
   const g=x.createLinearGradient(0,0,0,h);
   g.addColorStop(0,"#f7efe1");g.addColorStop(0.45,"#eae1d3");g.addColorStop(0.55,"#d6ccb9");g.addColorStop(1,"#4f4a40");
   x.fillStyle=g;x.fillRect(0,0,w,h);
-  for(const cx of [w*0.30,w*0.70]){                       // 2 ferestre luminoase (structura in reflexii)
+  for(const cx of [w*0.30,w*0.70]){                       // 2 // eliminat luminoase (structura in reflexii)
     x.fillStyle="rgba(255,252,244,0.98)";x.fillRect(cx-85,h*0.20,170,h*0.46);
     x.strokeStyle="rgba(70,60,48,0.55)";x.lineWidth=8;x.strokeRect(cx-85,h*0.20,170,h*0.46);
     x.beginPath();x.moveTo(cx,h*0.20);x.lineTo(cx,h*0.66);x.moveTo(cx-85,h*0.43);x.lineTo(cx+85,h*0.43);x.stroke();
@@ -502,7 +502,7 @@ export default function Scena3D({ cfg, tip, onReady }){
         box(latTurn,usiH,0.002,xc,yUsiJos+usiH/2,D/2-0.008,matGap);
         front(latTurn-2*gap,usiH-2*gap,0.018,xc,yUsiJos+usiH/2,frontZ,matExt);
       } else {
-        // vitrina: polite interioare vizibile prin geam + usa cu rama din material
+        // vitrina: polite interioare vizibile prin // eliminat + usa cu rama din material
         for(let r=1;r<=2;r++) box(latTurn,t,D-0.04,xc,yUsiJos+(usiH/3)*r,0);
         const fw=Math.min(0.055,latTurn*0.16),gw=latTurn-2*gap,gh=usiH-2*gap,yC=yUsiJos+usiH/2;
         box(gw,fw,0.018,xc,yUsiJos+usiH-gap-fw/2,frontZ);
