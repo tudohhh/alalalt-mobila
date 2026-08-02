@@ -762,7 +762,7 @@ export default function Scena3D({ cfg, tip, onReady }){
     key.shadow.camera.near=0.5;key.shadow.camera.far=Math.max(18,(L+Htot+D)*2.5);
     key.shadow.camera.updateProjectionMatrix();
     needShadow.current=true;
-  },[cfg.latime,cfg.inaltime,cfg.adancime,cfg.turnuri,cfg.model,cfg.materialExt,cfg.blat,cfg.suspendat,cfg.suprapus,tip]);
+  },[cfg.latime,cfg.inaltime,cfg.adancime,cfg.turnuri,cfg.model,cfg.materialExt,cfg.materialFront,cfg.blat,cfg.suspendat,cfg.suprapus,tip]);
 
   return (
     <div style={{position:"relative",width:"100%",height:"100%"}}>
