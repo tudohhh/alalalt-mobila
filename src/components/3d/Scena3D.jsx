@@ -154,6 +154,10 @@ function _sizedWoodMat(decor, w, h, dir){
 }
 
 
+function _finishOf(M){
+  M=M||{};
+  return M.finish || ((M.clasa||"").startsWith("pal") ? (M.tex?"lemn":"mat") : "mat");
+}
 function matDinObj(M, nume){
   M=M||Object.values(C.materialeCorp)[0]||{};
   const finish=_finishOf(M);
