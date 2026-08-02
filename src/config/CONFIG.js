@@ -66,17 +66,12 @@ export const CONFIG_TAMPLAR = {
   },
 
   consumabile: {
-    cantABS18: 1.0,
-    cantPF18: 1.0,
-    cantPFL: 1.0,
-    cantMDF: 1.0,
-    cantHPL: 1.0,
-    cantBlat: 1.0,
-    cantGlisare: 1.0,
-    cantSertare: 1.0,
-    cantBalamale: 1.0,
-    cantPicioare: 1.0,
-    cantPlinta: 1.0,
+    // Structură cerută de calcul.js: fiecare consumabil e {pret, um}.
+    // (Înainte erau doar cantități — cantABS18:1.0 — ceea ce făcea calcul.js
+    // să crape la .pret → pagină albă la orice categorie.)
+    cantABS18: { pret: 25, um: "mp" },
+    cantABS36: { pret: 35, um: "ml" },
+    PFL:       { pret: 20, um: "mp" },
   },
 
   bucatarie: {
@@ -162,4 +157,336 @@ export const CONFIG_TAMPLAR = {
     standard: { nume: "Standard" },
     premium:  { nume: "Premium" },
   },
+
+  // ── Chei cerute de calcul.js (v2.1), aduse din configurator-mobila ──
+  pretStructuraPal: 84,
+  finisaje: {
+  "PAL melaminat (lemn)": {
+    "finish": "lemn",
+    "pretMp": 84,
+    "clasa": "pal",
+    "paleta": "lemn"
+  },
+  "MDF vopsit mat": {
+    "finish": "mat",
+    "pretMp": 170,
+    "clasa": "mdf_vopsit",
+    "paleta": "mat"
+  },
+  "MDF lucios": {
+    "finish": "lucios",
+    "pretMp": 230,
+    "clasa": "mdf_infoliat",
+    "paleta": "lucios"
+  },
+  "Riflaj": {
+    "finish": "riflaj",
+    "pretMp": 300,
+    "clasa": "pal",
+    "paleta": "riflaj"
+  },
+  "PAL uni (economic)": {
+    "finish": "mat",
+    "pretMp": 45,
+    "clasa": "pal",
+    "paleta": "mat"
+  }
+},
+  palete: {
+  "lemn": [
+    {
+      "nume": "Stejar natur",
+      "hex": "#c8a878",
+      "tex": [
+        "#c8a878",
+        "#6b4a28"
+      ]
+    },
+    {
+      "nume": "Stejar Sonoma",
+      "hex": "#c9b48f",
+      "tex": [
+        "#c9b48f",
+        "#8a6f45"
+      ]
+    },
+    {
+      "nume": "Melaminat auriu",
+      "hex": "#c9a36a",
+      "tex": [
+        "#c9a36a",
+        "#7a5a2e"
+      ]
+    },
+    {
+      "nume": "Frasin gri",
+      "hex": "#b7ada0",
+      "tex": [
+        "#b7ada0",
+        "#6d6357"
+      ]
+    },
+    {
+      "nume": "Nuc american",
+      "hex": "#7a5236",
+      "tex": [
+        "#7a5236",
+        "#3a2416"
+      ],
+      "addMp": 20
+    },
+    {
+      "nume": "Wengé",
+      "hex": "#4a3a2e",
+      "tex": [
+        "#4a3a2e",
+        "#1e1712"
+      ],
+      "addMp": 20
+    }
+  ],
+  "mat": [
+    {
+      "nume": "Alb",
+      "hex": "#f2f1ec"
+    },
+    {
+      "nume": "Crem",
+      "hex": "#e8e4dd"
+    },
+    {
+      "nume": "Bej nisip",
+      "hex": "#d8c9b0"
+    },
+    {
+      "nume": "Gri piatră",
+      "hex": "#9a978f"
+    },
+    {
+      "nume": "Antracit",
+      "hex": "#35383b"
+    },
+    {
+      "nume": "Negru",
+      "hex": "#201f1e"
+    },
+    {
+      "nume": "Bleumarin",
+      "hex": "#2f3b52"
+    },
+    {
+      "nume": "Verde salvie",
+      "hex": "#8a9a84"
+    },
+    {
+      "nume": "Verde măsliniu",
+      "hex": "#5f6b4a"
+    },
+    {
+      "nume": "Terracotta",
+      "hex": "#b06a4e"
+    }
+  ],
+  "lucios": [
+    {
+      "nume": "Alb lucios",
+      "hex": "#f4f4f2"
+    },
+    {
+      "nume": "Cașmir",
+      "hex": "#e7ded0"
+    },
+    {
+      "nume": "Gri lucios",
+      "hex": "#b9b6b0"
+    },
+    {
+      "nume": "Bleumarin lucios",
+      "hex": "#28324a"
+    },
+    {
+      "nume": "Negru lucios",
+      "hex": "#171717"
+    }
+  ],
+  "riflaj": [
+    {
+      "nume": "Stejar",
+      "hex": "#c8a878"
+    },
+    {
+      "nume": "Nuc",
+      "hex": "#7a5236"
+    },
+    {
+      "nume": "Alb",
+      "hex": "#eae7df"
+    },
+    {
+      "nume": "Antracit",
+      "hex": "#35383b"
+    },
+    {
+      "nume": "Negru",
+      "hex": "#201f1e"
+    }
+  ]
+},
+  feronerie: {
+  "Balama Hafele": {
+    "pret": 6,
+    "um": "buc"
+  },
+  "Balama Blum": {
+    "pret": 12,
+    "um": "buc"
+  },
+  "Sistem push to open": {
+    "pret": 16,
+    "um": "buc"
+  },
+  "Glisiera normala": {
+    "pret": 16.3,
+    "um": "set"
+  },
+  "Glisiera tandem GTV D500": {
+    "pret": 50,
+    "um": "set"
+  },
+  "Glisiera tandem Blum tip-on D500": {
+    "pret": 71,
+    "um": "set"
+  },
+  "Cos jolly amortizat Blum 150": {
+    "pret": 350,
+    "um": "buc"
+  },
+  "Cos jolly tip-on Blum 150": {
+    "pret": 153,
+    "um": "buc"
+  },
+  "Maner standard": {
+    "pret": 12,
+    "um": "buc"
+  },
+  "Maner profil negru": {
+    "pret": 50,
+    "um": "buc"
+  },
+  "Maner frezat MDF": {
+    "pret": 40,
+    "um": "ml"
+  },
+  "Riflaj MDF negru in cant": {
+    "pret": 500,
+    "um": "ml"
+  },
+  "Picioare reglabile H120": {
+    "pret": 5,
+    "um": "buc"
+  },
+  "Plinta": {
+    "pret": 120,
+    "um": "buc"
+  },
+  "Picurator 900": {
+    "pret": 150,
+    "um": "buc"
+  },
+  "Piston ridicare 100N": {
+    "pret": 12.4,
+    "um": "buc"
+  },
+  "Aventos HK-XS": {
+    "pret": 70,
+    "um": "buc"
+  },
+  "Sistem coborare usa": {
+    "pret": 25,
+    "um": "buc"
+  },
+  "Bara haine cu prinderi": {
+    "pret": 70,
+    "um": "buc"
+  },
+  "Cos gunoi pe usa": {
+    "pret": 53,
+    "um": "buc"
+  },
+  "Sistem LED": {
+    "pret": 350,
+    "um": "buc"
+  }
+},
+  geamuriOglinzi: {
+  "Geam float 3mm": {
+    "pretMp": 37
+  },
+  "Geam float 4mm": {
+    "pretMp": 39
+  },
+  "Geam float 5mm": {
+    "pretMp": 53
+  },
+  "Geam float 6mm": {
+    "pretMp": 59
+  },
+  "Geam float 8mm": {
+    "pretMp": 95
+  },
+  "Geam float 10mm": {
+    "pretMp": 105
+  },
+  "Geam ultraclar 4mm": {
+    "pretMp": 87
+  },
+  "Geam ultraclar 6mm": {
+    "pretMp": 137
+  },
+  "Geam fumuriu 4mm": {
+    "pretMp": 55
+  },
+  "Geam fumuriu 5mm": {
+    "pretMp": 79
+  },
+  "Geam fumuriu 6mm": {
+    "pretMp": 80
+  },
+  "Geam Lacobel": {
+    "pretMp": 125
+  },
+  "Geam vopsit alb": {
+    "pretMp": 135
+  },
+  "Geam ornament import": {
+    "pretMp": 70
+  },
+  "Geam decorativ alb": {
+    "pretMp": 100
+  },
+  "Geam decorativ fumuriu": {
+    "pretMp": 105
+  },
+  "Geam reflexiv bronze": {
+    "pretMp": 80
+  },
+  "Geam lowe 4mm": {
+    "pretMp": 45
+  },
+  "Geam 4 anotimpuri": {
+    "pretMp": 50
+  },
+  "Oglinda 3mm": {
+    "pretMp": 54
+  },
+  "Oglinda 4mm": {
+    "pretMp": 60
+  },
+  "Oglinda bronze 4mm": {
+    "pretMp": 110
+  },
+  "Oglinda/geam montat": {
+    "pretMp": 185
+  }
+},
 };
