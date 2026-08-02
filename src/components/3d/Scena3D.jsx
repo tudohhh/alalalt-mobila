@@ -210,6 +210,23 @@ export default function Scena3D({ cfg, tip, onReady }) {
     // moarte). Îl conectăm ca lemnul să prindă viață — reflexii subtile de
     // interior (are chiar ferestre în reflexie pentru realism).
     scene.environment = _envTex(renderer);
+
+    // Variabile derivate din cfg/tip — se pierduseră în merge-ul stricat
+    // (zona 'mobilierul' era goală), deci L/D/Htot/materialExt/T erau folosite
+    // dar nedefinite → 'L is not defined' la montare → pagină albă la categorie.
+    const T = C.tipuri[tip];
+    const model = C.modeleLayout[cfg.model];
+    const { latime, inaltime, adancime, turnuri, materialExt, suspendat, suprapus } = cfg;
+    const L = latime / 1000, Htot = inaltime / 1000, D = adancime / 1000, t = 0.018;
+    const sertarePerTurn = model.sertarePerTurn;
+    const suspInalt = suspendat ? 0.9 : 0;
+    const arePicioare = T.blat && !suspendat;
+    const yBaza = suspendat ? suspInalt : (arePicioare ? 0.08 : 0.02);
+    const Hmain = suprapus ? Htot * 0.7 : Htot;
+
+    // Grupul care conține toate piesele mobilei (adăugat la scenă la final).
+    // Lipsea — pierdut în merge — deși box()/front() fac g.add().
+    const g = new THREE.Group();
     
     // --- mobilierul ---
     
