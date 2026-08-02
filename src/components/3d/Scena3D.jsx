@@ -552,6 +552,17 @@ function buildContent(cfg, tip){
   const matExt=matDinObj(_M,_nume);
   const _finish=_finishOf(_M);
   const _woodDecor = _finish==="lemn" ? { pbr: woodPBR(_M.tex?_M.tex[0]:_M.hex, _seedFromName(_nume), 0.42), eLucios:false } : null;
+
+  // Material de FRONT separat: dacă clientul alege un material de front diferit
+  // (ex. corp alb + front stejar — cel mai cerut look), frontul îl folosește;
+  // altfel cade pe materialul corpului (identic ca înainte).
+  const _numeFront = cfg.materialFront || materialExt;
+  const _MF = C.materialeCorp[_numeFront] || _M;
+  const _finishFront = _finishOf(_MF);
+  const matFront = matDinObj(_MF, _numeFront);
+  const _woodDecorFront = _finishFront==="lemn" ? { pbr: woodPBR(_MF.tex?_MF.tex[0]:_MF.hex, _seedFromName(_numeFront), 0.42), eLucios:false } : null;
+  const matCantFront=new THREE.MeshStandardMaterial({color:new THREE.Color(_MF.hex||"#c9a36a").multiplyScalar(0.72),roughness:0.35,metalness:0.05});
+
   const matGap=new THREE.MeshBasicMaterial({color:0x151210});
   const matMet=new THREE.MeshStandardMaterial({color:0x232323,roughness:0.3,metalness:0.9});
   const matSticla=new THREE.MeshPhysicalMaterial({color:0xd7e8ec,roughness:0.05,metalness:0,transparent:true,opacity:0.16,clearcoat:1});
@@ -559,12 +570,12 @@ function buildContent(cfg, tip){
   const box=(w,h,d,x,y,z,m)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m||matExt);me.position.set(x,y,z);me.castShadow=true;me.receiveShadow=true;g.add(me);return me;};
   const matCant=new THREE.MeshStandardMaterial({color:new THREE.Color(_M.hex||"#c9a36a").multiplyScalar(0.72),roughness:0.35,metalness:0.05});
   const front=(w,h,d,x,y,z,mFata)=>{
-    let fMat = mFata||matExt;
-    if(!mFata || mFata===matExt){
-      if(_finish==="lemn" && _woodDecor) fMat=_sizedWoodMat(_woodDecor, w, h, h>=w?"v":"h");
-      else if(_finish==="riflaj") fMat=_flutedMat(_M.hex||"#b89b6e", w);
+    let fMat = mFata||matFront;
+    if(!mFata){
+      if(_finishFront==="lemn" && _woodDecorFront) fMat=_sizedWoodMat(_woodDecorFront, w, h, h>=w?"v":"h");
+      else if(_finishFront==="riflaj") fMat=_flutedMat(_MF.hex||"#b89b6e", w);
     }
-    const mats=[matCant,matCant,matCant,matCant,fMat,matCant];
+    const mats=[matCantFront,matCantFront,matCantFront,matCantFront,fMat,matCantFront];
     const me=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mats);
     me.position.set(x,y,z);me.castShadow=true;me.receiveShadow=true;g.add(me);return me;};
 

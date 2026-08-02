@@ -92,6 +92,7 @@ function Config({tip,inapoi}){
   const [turnuri,setTurnuri]=useState(d.turnuri);
   const [model,setModel]=useState(d.model);
   const [materialExt,setMaterialExt]=useState("PAL melaminat");
+  const [materialFront,setMaterialFront]=useState(null); // null = la fel ca corpul
   const [blat,setBlat]=useState("Fără blat");
   const [suspendat,setSuspendat]=useState(false);
   const [suprapus,setSuprapus]=useState(false);
@@ -102,8 +103,8 @@ function Config({tip,inapoi}){
   const [poza,setPoza]=useState(null);
   const capRef=useRef(null);
 
-  const cfg={latime,inaltime,adancime,turnuri,model,materialExt,blat,suspendat,suprapus,accesoriiSel};
-  const deviz=useMemo(()=>calculeaza(cfg,tip),[latime,inaltime,adancime,turnuri,model,materialExt,blat,suspendat,suprapus,accesoriiSel,tip]);
+  const cfg={latime,inaltime,adancime,turnuri,model,materialExt,materialFront,blat,suspendat,suprapus,accesoriiSel};
+  const deviz=useMemo(()=>calculeaza(cfg,tip),[latime,inaltime,adancime,turnuri,model,materialExt,materialFront,blat,suspendat,suprapus,accesoriiSel,tip]);
   const pretA=usePretAnimat(deviz.total);
   const toggleAcc=n=>setAccesoriiSel(s=>s.includes(n)?s.filter(x=>x!==n):[...s,n]);
   const rezumat=`${T.nume} — ${latime}x${inaltime}x${adancime} mm — ${C.modeleLayout[model].nume} — ${turnuri} turnuri — ${materialExt}${suprapus?" — supantă":""}${suspendat?" — suspendat":""}${blat!=="Fără blat"?` — blat ${blat}`:""}${accesoriiSel.length?` — ${accesoriiSel.length} accesorii`:""}`;
@@ -144,7 +145,7 @@ function Config({tip,inapoi}){
         {T.suspendabil&&<Check label="Suspendat (pe perete)" v={suspendat} set={setSuspendat}/>}
         {T.suprapozabil&&<Check label="Corp suprapus (supantă)" v={suprapus} set={setSuprapus}/>}
 
-        <Sec>Material fronturi</Sec>
+        <Sec>Material corp</Sec>
         <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:7,marginBottom:6}}>
           {Object.entries(C.materialeCorp).map(([n,m])=>(
             <button key={n} title={n} onClick={()=>setMaterialExt(n)}
@@ -153,6 +154,22 @@ function Config({tip,inapoi}){
                 boxShadow:materialExt===n?"0 0 0 3px rgba(163,126,74,.25)":"inset 0 0 0 1px rgba(255,255,255,.25)"}}/>))}
         </div>
         <div style={{fontSize:11.5,color:"#8a8378",marginBottom:4}}>{materialExt} · {C.materialeCorp[materialExt].pretMp} lei/mp</div>
+
+        <Sec>Fronturi</Sec>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:7,marginBottom:6}}>
+          <button title="La fel ca corpul" onClick={()=>setMaterialFront(null)}
+            style={{aspectRatio:"1",borderRadius:11,cursor:"pointer",background:"linear-gradient(135deg,#eee 50%,#ccc 50%)",
+              display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"#666",fontWeight:600,
+              border:materialFront===null?"2.5px solid #a37e4a":"1px solid rgba(0,0,0,.1)",
+              boxShadow:materialFront===null?"0 0 0 3px rgba(163,126,74,.25)":"none"}}>=corp</button>
+          {Object.entries(C.materialeCorp).map(([n,m])=>(
+            <button key={n} title={n} onClick={()=>setMaterialFront(n)}
+              style={{aspectRatio:"1",borderRadius:11,cursor:"pointer",background:m.hex,
+                border:materialFront===n?"2.5px solid #a37e4a":"1px solid rgba(0,0,0,.1)",
+                boxShadow:materialFront===n?"0 0 0 3px rgba(163,126,74,.25)":"inset 0 0 0 1px rgba(255,255,255,.25)"}}/>))}
+        </div>
+        <div style={{fontSize:11.5,color:"#8a8378",marginBottom:4}}>{materialFront?`Fronturi: ${materialFront}`:"Fronturi la fel ca corpul"}</div>
+
 
         {T.blat&&<><Sec>Blat</Sec>
           <div style={{display:"flex",gap:7,flexWrap:"wrap"}}>
