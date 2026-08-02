@@ -627,9 +627,25 @@ function buildContent(cfg, tip){
   // ——— fronturi cu SHADOW GAP (rost 3mm întunecat) ———
   const nT=Math.max(1,turnuri),latTurn=(L-(nT+1)*t)/nT;
   const frontZ=D/2+0.004,gap=0.003;
+  // Împărțire pe CORPURI reale (constrângere de atelier): peste ~90cm/corp,
+  // mobila e mai multe corpuri alăturate. Calculăm câte corpuri și la ce
+  // compartimente (turnuri) cade o îmbinare de corpuri — acolo desenăm un
+  // dublu-perete (2 laterale lipite), vizibil diferit de un despărțitor simplu.
+  const latMaxCorp=(C.latimeMaximaCorp||900)/1000;
+  const nrCorpuri=Math.max(1,Math.ceil(L/latMaxCorp));
+  const turnuriPerCorp=Math.ceil(nT/nrCorpuri);
+  const eImbinareCorp=(idx)=> idx>0 && idx<nT && (idx % turnuriPerCorp===0);
   for(let i=0;i<nT;i++){
     const xStanga=-L/2+t+i*(latTurn+t),xc=xStanga+latTurn/2;
-    if(i<nT-1) box(t,Hmain-2*t,D,xStanga+latTurn+t/2,cy,0);
+    if(i<nT-1){
+      // despărțitor între turnuri; dacă e îmbinare de corpuri → dublu perete
+      const xImb=xStanga+latTurn+t/2;
+      box(t,Hmain-2*t,D,xImb,cy,0);
+      if(eImbinareCorp(i+1)){
+        // al doilea perete lipit (îmbinarea a două corpuri reale)
+        box(t,Hmain-2*t,D,xImb+t*1.05,cy,0);
+      }
+    }
     if(model.deschis){
       box(latTurn,Hmain-2*t,0.006,xc,cy,-D/2+0.006,matExt);
       const nr=Math.max(2,Math.round(Hmain/0.4));

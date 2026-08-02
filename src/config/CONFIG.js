@@ -334,6 +334,10 @@ export const CONFIG_TAMPLAR = {
 },
   // Tipuri de mâner selectabile — schimbă mult caracterul mobilei.
   // Fiecare are un stil de desen în Scena3D (drawManer) + preț.
+  // Constrângere de atelier: un corp de mobilă nu se face mai lat de ~90cm
+  // (PAL-ul se lasă la mijloc, transport/manevrare greu). Peste asta, mobila
+  // se împarte automat în corpuri alăturate — cum se face în realitate.
+  latimeMaximaCorp: 900, // mm
   tipuriManer: {
     "Bară neagră":    { stil: "bara",  culoare: "#232323", pretBuc: 12 },
     "Buton negru":    { stil: "buton", culoare: "#232323", pretBuc: 8 },
