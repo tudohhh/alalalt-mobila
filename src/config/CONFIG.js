@@ -332,6 +332,15 @@ export const CONFIG_TAMPLAR = {
     }
   ]
 },
+  // Tipuri de mâner selectabile — schimbă mult caracterul mobilei.
+  // Fiecare are un stil de desen în Scena3D (drawManer) + preț.
+  tipuriManer: {
+    "Bară neagră":    { stil: "bara",  culoare: "#232323", pretBuc: 12 },
+    "Buton negru":    { stil: "buton", culoare: "#232323", pretBuc: 8 },
+    "Bară aurie":     { stil: "bara",  culoare: "#b8963f", pretBuc: 22 },
+    "Gola (profil)":  { stil: "gola",  culoare: "#8a8a8a", pretBuc: 35 },
+    "Fără mâner":     { stil: "none",  culoare: "#000000", pretBuc: 0 },
+  },
   feronerie: {
   "Balama Hafele": {
     "pret": 6,

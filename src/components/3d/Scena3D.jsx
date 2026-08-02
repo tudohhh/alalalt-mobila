@@ -565,6 +565,30 @@ function buildContent(cfg, tip){
 
   const matGap=new THREE.MeshBasicMaterial({color:0x151210});
   const matMet=new THREE.MeshStandardMaterial({color:0x232323,roughness:0.3,metalness:0.9});
+
+  // Mâner selectabil: stilul vine din cfg.tipManer (bara/buton/gola/none).
+  const _manerCfg = (C.tipuriManer && C.tipuriManer[cfg.tipManer]) || { stil:"bara", culoare:"#232323" };
+  const _matManer = new THREE.MeshStandardMaterial({ color:new THREE.Color(_manerCfg.culoare), roughness:0.32, metalness:0.85 });
+  // Desenează un mâner la (x,y,z) pe front; lat = lățimea piesei (pt dimensionare).
+  const drawManer = (x, y, z, lat, vertical=true) => {
+    const stil = _manerCfg.stil;
+    if(stil==="none") return; // push-to-open, fără mâner vizibil
+    if(stil==="buton"){
+      const b=new THREE.Mesh(new THREE.SphereGeometry(0.014,16,12),_matManer);
+      b.scale.z=0.6; b.position.set(x,y,z+0.012); b.castShadow=true; g.add(b); return;
+    }
+    if(stil==="gola"){
+      // profil orizontal subțire (gola = mâner-profil integrat pe muchie)
+      const gp=new THREE.Mesh(new THREE.BoxGeometry(Math.min(0.4,lat*0.8),0.014,0.01),_matManer);
+      gp.position.set(x,y,z+0.006); gp.castShadow=true; g.add(gp); return;
+    }
+    // "bara" (default): bară dreptunghiulară, orientată vertical sau orizontal
+    const len=Math.min(0.16,lat*0.5);
+    const geo = vertical ? new THREE.BoxGeometry(0.008,len,0.012) : new THREE.BoxGeometry(len,0.008,0.012);
+    const bar=new THREE.Mesh(geo,_matManer);
+    bar.position.set(x,y,z+0.014); bar.castShadow=true; g.add(bar);
+  };
+
   const matSticla=new THREE.MeshPhysicalMaterial({color:0xd7e8ec,roughness:0.05,metalness:0,transparent:true,opacity:0.16,clearcoat:1});
   const g=new THREE.Group();
   const box=(w,h,d,x,y,z,m)=>{const me=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m||matExt);me.position.set(x,y,z);me.castShadow=true;me.receiveShadow=true;g.add(me);return me;};
@@ -629,16 +653,14 @@ function buildContent(cfg, tip){
       box(fw,gh-2*fw,0.018,xc+gw/2-fw/2,yC,frontZ);
       box(gw-2*fw,gh-2*fw,0.006,xc,yC,frontZ-0.004,matSticla);
     }
-    const h=new THREE.Mesh(new THREE.BoxGeometry(0.008,Math.min(0.16,usiH*0.3),0.012),matMet);
     const hSide=(i%2===0)?1:-1;
-    h.position.set(xc+hSide*(latTurn/2-0.028),yUsiJos+usiH/2,frontZ+0.014);h.castShadow=true;g.add(h);
+    drawManer(xc+hSide*(latTurn/2-0.028), yUsiJos+usiH/2, frontZ, usiH, true);
     if(sertZ>0){
       const ns=sertarePerTurn,sh=sertZ/ns;
       for(let s=0;s<ns;s++){
         const ycc=yBaza+t+sh/2+s*sh;
         front(latTurn-2*gap,sh-2*gap,0.018,xc,ycc,frontZ);
-        const bar=new THREE.Mesh(new THREE.BoxGeometry(Math.min(0.22,latTurn*0.45),0.008,0.012),matMet);
-        bar.position.set(xc,ycc+sh/2-0.018,frontZ+0.014);bar.castShadow=true;g.add(bar);
+        drawManer(xc, ycc+sh/2-0.018, frontZ, latTurn, false);
       }
     }
   }
@@ -650,8 +672,7 @@ function buildContent(cfg, tip){
       const xc=-L/2+t+i*(latTurn+t)+latTurn/2;
       if(i<nT-1)box(t,Hsup-2*t,D,-L/2+t+i*(latTurn+t)+latTurn+t/2,cyS,0);
       front(latTurn-2*gap,Hsup-2*t-2*gap,0.018,xc,cyS,frontZ);
-      const h=new THREE.Mesh(new THREE.BoxGeometry(Math.min(0.18,latTurn*0.4),0.008,0.012),matMet);
-      h.position.set(xc,ySup+0.05,frontZ+0.014);g.add(h);
+      drawManer(xc, ySup+0.05, frontZ, latTurn, false);
     }
   }
   content.add(g);
@@ -762,7 +783,7 @@ export default function Scena3D({ cfg, tip, onReady }){
     key.shadow.camera.near=0.5;key.shadow.camera.far=Math.max(18,(L+Htot+D)*2.5);
     key.shadow.camera.updateProjectionMatrix();
     needShadow.current=true;
-  },[cfg.latime,cfg.inaltime,cfg.adancime,cfg.turnuri,cfg.model,cfg.materialExt,cfg.materialFront,cfg.blat,cfg.suspendat,cfg.suprapus,tip]);
+  },[cfg.latime,cfg.inaltime,cfg.adancime,cfg.turnuri,cfg.model,cfg.materialExt,cfg.materialFront,cfg.tipManer,cfg.blat,cfg.suspendat,cfg.suprapus,tip]);
 
   return (
     <div style={{position:"relative",width:"100%",height:"100%"}}>

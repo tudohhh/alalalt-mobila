@@ -93,6 +93,7 @@ function Config({tip,inapoi}){
   const [model,setModel]=useState(d.model);
   const [materialExt,setMaterialExt]=useState("PAL melaminat");
   const [materialFront,setMaterialFront]=useState(null); // null = la fel ca corpul
+  const [tipManer,setTipManer]=useState("Bară neagră");
   const [blat,setBlat]=useState("Fără blat");
   const [suspendat,setSuspendat]=useState(false);
   const [suprapus,setSuprapus]=useState(false);
@@ -103,8 +104,8 @@ function Config({tip,inapoi}){
   const [poza,setPoza]=useState(null);
   const capRef=useRef(null);
 
-  const cfg={latime,inaltime,adancime,turnuri,model,materialExt,materialFront,blat,suspendat,suprapus,accesoriiSel};
-  const deviz=useMemo(()=>calculeaza(cfg,tip),[latime,inaltime,adancime,turnuri,model,materialExt,materialFront,blat,suspendat,suprapus,accesoriiSel,tip]);
+  const cfg={latime,inaltime,adancime,turnuri,model,materialExt,materialFront,tipManer,blat,suspendat,suprapus,accesoriiSel};
+  const deviz=useMemo(()=>calculeaza(cfg,tip),[latime,inaltime,adancime,turnuri,model,materialExt,materialFront,tipManer,blat,suspendat,suprapus,accesoriiSel,tip]);
   const pretA=usePretAnimat(deviz.total);
   const toggleAcc=n=>setAccesoriiSel(s=>s.includes(n)?s.filter(x=>x!==n):[...s,n]);
   const rezumat=`${T.nume} — ${latime}x${inaltime}x${adancime} mm — ${C.modeleLayout[model].nume} — ${turnuri} turnuri — ${materialExt}${suprapus?" — supantă":""}${suspendat?" — suspendat":""}${blat!=="Fără blat"?` — blat ${blat}`:""}${accesoriiSel.length?` — ${accesoriiSel.length} accesorii`:""}`;
@@ -169,6 +170,15 @@ function Config({tip,inapoi}){
                 boxShadow:materialFront===n?"0 0 0 3px rgba(163,126,74,.25)":"inset 0 0 0 1px rgba(255,255,255,.25)"}}/>))}
         </div>
         <div style={{fontSize:11.5,color:"#8a8378",marginBottom:4}}>{materialFront?`Fronturi: ${materialFront}`:"Fronturi la fel ca corpul"}</div>
+
+        <Sec>Mânere</Sec>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:6}}>
+          {Object.entries(C.tipuriManer).map(([n,m])=>(
+            <button key={n} onClick={()=>setTipManer(n)}
+              style={{padding:"7px 11px",borderRadius:9,cursor:"pointer",fontSize:11.5,fontWeight:600,
+                background:tipManer===n?"#f3ede3":"#fff",color:"#3a3630",
+                border:tipManer===n?"2px solid #a37e4a":"1px solid #d8d2c6"}}>{n}</button>))}
+        </div>
 
 
         {T.blat&&<><Sec>Blat</Sec>
