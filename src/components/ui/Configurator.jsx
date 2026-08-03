@@ -158,15 +158,6 @@ function Config({tip,inapoi}){
             )); })()}
         </div>
 
-        <Sl label="Lățime" v={latime} set={setLatime} min={L.latime.min} max={L.latime.max} step={L.latime.pas}/>
-        <Sl label="Înălțime" v={inaltime} set={setInaltime} min={L.inaltime.min} max={L.inaltime.max} step={L.inaltime.pas}/>
-        <Sl label="Adâncime" v={adancime} set={setAdancime} min={L.adancime.min} max={L.adancime.max} step={L.adancime.pas}/>
-        <div style={{fontSize:11,color:"#8a8378",margin:"2px 0 6px",lineHeight:1.4}}>
-          {(()=>{ const lm=T.latimeMaximaCorp||C.latimeMaximaCorp||900; const nc=Math.max(1,Math.ceil(latime/lm));
-            return nc>1 ? `≈ ${nc} corpuri (peste ${lm/10} cm/corp se împarte — cum se produce real)` : "1 corp"; })()}
-        </div>
-        <Sl label="Turnuri" v={turnuri} set={setTurnuri} min={1} max={T.maxTurnuri} step={1} unit=""/>
-
         {(T.suspendabil||T.suprapozabil)&&<Sec>Structură</Sec>}
         {T.suspendabil&&<Check label="Suspendat (pe perete)" v={suspendat} set={setSuspendat}/>}
         {T.suprapozabil&&<Check label="Corp suprapus (supantă)" v={suprapus} set={setSuprapus}/>}
