@@ -94,6 +94,7 @@ function Config({tip,inapoi}){
   const [materialExt,setMaterialExt]=useState("PAL melaminat");
   const [materialFront,setMaterialFront]=useState(null); // null = la fel ca corpul
   const [tipManer,setTipManer]=useState("Bară neagră");
+  const [compartimente,setCompartimente]=useState(null); // null = layout global; array = per compartiment
   const [blat,setBlat]=useState("Fără blat");
   const [suspendat,setSuspendat]=useState(false);
   const [suprapus,setSuprapus]=useState(false);
@@ -104,8 +105,8 @@ function Config({tip,inapoi}){
   const [poza,setPoza]=useState(null);
   const capRef=useRef(null);
 
-  const cfg={latime,inaltime,adancime,turnuri,model,materialExt,materialFront,tipManer,blat,suspendat,suprapus,accesoriiSel};
-  const deviz=useMemo(()=>calculeaza(cfg,tip),[latime,inaltime,adancime,turnuri,model,materialExt,materialFront,tipManer,blat,suspendat,suprapus,accesoriiSel,tip]);
+  const cfg={latime,inaltime,adancime,turnuri,model,materialExt,materialFront,tipManer,compartimente,blat,suspendat,suprapus,accesoriiSel};
+  const deviz=useMemo(()=>calculeaza(cfg,tip),[latime,inaltime,adancime,turnuri,model,materialExt,materialFront,tipManer,compartimente,blat,suspendat,suprapus,accesoriiSel,tip]);
   const pretA=usePretAnimat(deviz.total);
   const toggleAcc=n=>setAccesoriiSel(s=>s.includes(n)?s.filter(x=>x!==n):[...s,n]);
   const rezumat=`${T.nume} — ${latime}x${inaltime}x${adancime} mm — ${C.modeleLayout[model].nume} — ${turnuri} turnuri — ${materialExt}${suprapus?" — supantă":""}${suspendat?" — suspendat":""}${blat!=="Fără blat"?` — blat ${blat}`:""}${accesoriiSel.length?` — ${accesoriiSel.length} accesorii`:""}`;
@@ -146,6 +147,36 @@ function Config({tip,inapoi}){
             return nc>1 ? `≈ ${nc} corpuri (peste ${lm/10} cm/corp se împarte — cum se produce real)` : "1 corp"; })()}
         </div>
         <Sl label="Turnuri" v={turnuri} set={setTurnuri} min={1} max={T.maxTurnuri} step={1} unit=""/>
+
+        <Sec>Compartimente</Sec>
+        {!compartimente ? (
+          <button onClick={()=>setCompartimente(Array.from({length:turnuri},()=>"usi"))}
+            style={{width:"100%",padding:"9px",borderRadius:9,cursor:"pointer",fontSize:11.5,fontWeight:600,
+              background:"#fff",color:"#3a3630",border:"1px dashed #a37e4a",marginBottom:6}}>
+            ✎ Compune fiecare compartiment
+          </button>
+        ) : (
+          <div style={{marginBottom:6}}>
+            {Array.from({length:turnuri}).map((_,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:5,marginBottom:4}}>
+                <span style={{fontSize:11,color:"#8a8378",width:16}}>{i+1}</span>
+                <div style={{display:"flex",gap:3,flex:1}}>
+                  {[["usi","Uși"],["usi_sertare","Uși+sert"],["sertare","Sertare"],["deschis","Deschis"],["vitrina","Vitrină"]].map(([k,lbl])=>{
+                    const cur=(compartimente[i]||"usi")===k;
+                    return <button key={k} onClick={()=>{const c=[...compartimente];c[i]=k;setCompartimente(c);}}
+                      style={{flex:1,padding:"5px 2px",borderRadius:7,cursor:"pointer",fontSize:9.5,fontWeight:600,
+                        background:cur?"#a37e4a":"#fff",color:cur?"#fff":"#5a544a",
+                        border:cur?"1px solid #a37e4a":"1px solid #d8d2c6"}}>{lbl}</button>;
+                  })}
+                </div>
+              </div>
+            ))}
+            <button onClick={()=>setCompartimente(null)}
+              style={{fontSize:10.5,color:"#a37e4a",background:"none",border:"none",cursor:"pointer",padding:"2px 0"}}>
+              ↺ înapoi la model predefinit
+            </button>
+          </div>
+        )}
         {(T.suspendabil||T.suprapozabil)&&<Sec>Structură</Sec>}
         {T.suspendabil&&<Check label="Suspendat (pe perete)" v={suspendat} set={setSuspendat}/>}
         {T.suprapozabil&&<Check label="Corp suprapus (supantă)" v={suprapus} set={setSuprapus}/>}
