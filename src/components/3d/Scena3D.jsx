@@ -627,6 +627,20 @@ function buildContent(cfg, tip){
   // ——— fronturi cu SHADOW GAP (rost 3mm întunecat) ———
   const nT=Math.max(1,turnuri),latTurn=(L-(nT+1)*t)/nT;
   const frontZ=D/2+0.004,gap=0.003;
+
+  // MODULAR: fiecare compartiment poate avea conținut diferit. cfg.compartimente
+  // e un array optional de tipuri: "usi" | "sertare" | "deschis" | "vitrina".
+  // Dacă lipsește (sau pt un index), cădem pe modelul GLOBAL — deci comportamentul
+  // vechi rămâne identic cât timp nu se folosește modularitatea.
+  const continutCompartiment=(i)=>{
+    const custom = cfg.compartimente && cfg.compartimente[i];
+    if(custom) return custom;
+    // derivat din modelul global (comportament vechi):
+    if(model.deschis) return "deschis";
+    if(model.vitrina && i===nT-1) return "vitrina";
+    if(model.sertarePerTurn>0) return "usi_sertare";
+    return "usi";
+  };
   // Împărțire pe CORPURI reale (constrângere de atelier): peste ~90cm/corp,
   // mobila e mai multe corpuri alăturate. Calculăm câte corpuri și la ce
   // compartimente (turnuri) cade o îmbinare de corpuri — acolo desenăm un
@@ -646,7 +660,8 @@ function buildContent(cfg, tip){
         box(t,Hmain-2*t,D,xImb+t*1.05,cy,0);
       }
     }
-    if(model.deschis){
+    const tipComp = continutCompartiment(i);
+    if(tipComp==="deschis"){
       box(latTurn,Hmain-2*t,0.006,xc,cy,-D/2+0.006,matExt);
       const nr=Math.max(2,Math.round(Hmain/0.4));
       for(let r=1;r<nr;r++) box(latTurn,t,D-0.03,xc,yBaza+t+(Hmain-2*t)*(r/nr),0);
@@ -654,9 +669,23 @@ function buildContent(cfg, tip){
       bara.rotation.z=Math.PI/2;bara.position.set(xc,yBaza+Hmain-0.12,0.02);bara.castShadow=true;g.add(bara);
       continue;
     }
-    const sertZ=sertarePerTurn>0?Math.min(Hmain*0.3,0.45):0;
+    // câte sertare are ACEST compartiment (modular): sertare→toată înălțimea,
+    // usi_sertare→jos, altele→0
+    const sertComp = tipComp==="sertare" ? Math.max(3,sertarePerTurn||3)
+                   : tipComp==="usi_sertare" ? (sertarePerTurn||2) : 0;
+    const sertZ=sertComp>0 ? (tipComp==="sertare"?Hmain-2*t:Math.min(Hmain*0.3,0.45)) : 0;
     const yUsiJos=yBaza+t+sertZ,usiH=Hmain-t-sertZ-t;
-    const eVitrina=model.vitrina && i===nT-1;
+    const eVitrina=(tipComp==="vitrina");
+    if(tipComp==="sertare"){
+      // compartiment doar cu sertare (fără uși deasupra)
+      const ns=sertComp,sh=sertZ/ns;
+      for(let s=0;s<ns;s++){
+        const ycc=yBaza+t+sh/2+s*sh;
+        front(latTurn-2*gap,sh-2*gap,0.018,xc,ycc,frontZ);
+        drawManer(xc, ycc+sh/2-0.018, frontZ, latTurn, false);
+      }
+      continue;
+    }
     if(!eVitrina){
       box(latTurn,usiH,0.002,xc,yUsiJos+usiH/2,D/2-0.008,matGap);
       front(latTurn-2*gap,usiH-2*gap,0.018,xc,yUsiJos+usiH/2,frontZ,matExt);
