@@ -133,11 +133,18 @@ function Config({tip,inapoi}){
 
       {/* PANOU CONTROALE — stanga, plutitor */}
       <div className="fz-panel" style={{...panou,left:18,top:64,bottom:16,width:272,overflowY:"auto",animationDelay:"80ms"}}>
-        <Sec>Model</Sec>
+        <Sec>Pornire rapidă</Sec>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:4}}>
           {Object.entries(C.modeleLayout).map(([k,m])=>(
-            <button key={k} onClick={()=>setModel(k)} style={{padding:"8px 4px",borderRadius:9,cursor:"pointer",fontSize:11.5,fontWeight:600,border:model===k?"2px solid #a37e4a":"1px solid #e3ded5",background:model===k?"#faf6ef":"#fff",color:"#2a2622"}}>{m.nume}</button>))}
+            <button key={k} onClick={()=>{
+              setModel(k);
+              // populează compartimentele cu layout-ul ales (Varianta 1):
+              const mdl=C.modeleLayout[k];
+              setCompartimente(Array.from({length:turnuri},(_,i)=>
+                mdl.deschis?"deschis":(mdl.vitrina&&i===turnuri-1)?"vitrina":(mdl.sertarePerTurn>0)?"usi_sertare":"usi"));
+            }} style={{padding:"8px 4px",borderRadius:9,cursor:"pointer",fontSize:11.5,fontWeight:600,border:model===k?"2px solid #a37e4a":"1px solid #e3ded5",background:model===k?"#faf6ef":"#fff",color:"#2a2622"}}>{m.nume}</button>))}
         </div>
+        <div style={{fontSize:10.5,color:"#a89f8e",marginBottom:6}}>Alege un punct de plecare, apoi ajustează fiecare compartiment mai jos.</div>
         <Sec>Dimensiuni</Sec>
         <Sl label="Lățime" v={latime} set={setLatime} min={L.latime.min} max={L.latime.max} step={L.latime.pas}/>
         <Sl label="Înălțime" v={inaltime} set={setInaltime} min={L.inaltime.min} max={L.inaltime.max} step={L.inaltime.pas}/>
@@ -149,34 +156,23 @@ function Config({tip,inapoi}){
         <Sl label="Turnuri" v={turnuri} set={setTurnuri} min={1} max={T.maxTurnuri} step={1} unit=""/>
 
         <Sec>Compartimente</Sec>
-        {!compartimente ? (
-          <button onClick={()=>setCompartimente(Array.from({length:turnuri},()=>"usi"))}
-            style={{width:"100%",padding:"9px",borderRadius:9,cursor:"pointer",fontSize:11.5,fontWeight:600,
-              background:"#fff",color:"#3a3630",border:"1px dashed #a37e4a",marginBottom:6}}>
-            ✎ Compune fiecare compartiment
-          </button>
-        ) : (
-          <div style={{marginBottom:6}}>
-            {Array.from({length:turnuri}).map((_,i)=>(
+        <div style={{marginBottom:6}}>
+          {(()=>{ const comp = compartimente || Array.from({length:turnuri},()=>"usi");
+            return Array.from({length:turnuri}).map((_,i)=>(
               <div key={i} style={{display:"flex",alignItems:"center",gap:5,marginBottom:4}}>
                 <span style={{fontSize:11,color:"#8a8378",width:16}}>{i+1}</span>
-                <div style={{display:"flex",gap:3,flex:1}}>
+                <div style={{display:"flex",gap:3,flex:1,flexWrap:"wrap"}}>
                   {[["usi","Uși"],["usi_sertare","Uși+sert"],["sertare","Sertare"],["deschis","Deschis"],["bara","Bară haine"],["rafturi","Rafturi"],["pantaloni","Pantaloni"],["cos","Coș rufe"],["vitrina","Vitrină"]].map(([k,lbl])=>{
-                    const cur=(compartimente[i]||"usi")===k;
-                    return <button key={k} onClick={()=>{const c=[...compartimente];c[i]=k;setCompartimente(c);}}
-                      style={{flex:1,padding:"5px 2px",borderRadius:7,cursor:"pointer",fontSize:9.5,fontWeight:600,
+                    const cur=(comp[i]||"usi")===k;
+                    return <button key={k} onClick={()=>{const c=[...comp];c[i]=k;setCompartimente(c);}}
+                      style={{padding:"5px 7px",borderRadius:7,cursor:"pointer",fontSize:9.5,fontWeight:600,
                         background:cur?"#a37e4a":"#fff",color:cur?"#fff":"#5a544a",
                         border:cur?"1px solid #a37e4a":"1px solid #d8d2c6"}}>{lbl}</button>;
                   })}
                 </div>
               </div>
-            ))}
-            <button onClick={()=>setCompartimente(null)}
-              style={{fontSize:10.5,color:"#a37e4a",background:"none",border:"none",cursor:"pointer",padding:"2px 0"}}>
-              ↺ înapoi la model predefinit
-            </button>
-          </div>
-        )}
+            )); })()}
+        </div>
         {(T.suspendabil||T.suprapozabil)&&<Sec>Structură</Sec>}
         {T.suspendabil&&<Check label="Suspendat (pe perete)" v={suspendat} set={setSuspendat}/>}
         {T.suprapozabil&&<Check label="Corp suprapus (supantă)" v={suprapus} set={setSuprapus}/>}
