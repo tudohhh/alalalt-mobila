@@ -467,27 +467,31 @@ function buildContent(cfg, tip){
   const ptx=_parchetTex();
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.MeshPhysicalMaterial({map:ptx,roughness:0.32,metalness:0.0,envMapIntensity:1.5,clearcoat:1.0,clearcoatRoughness:0.1}));
   floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;content.add(floor);
-  // covor sub mobilier — tesatura procedurala cu model, bordura si relief de par
-  const rugW=L*1.5+0.6, rugD=D*1.7;
+  // covor FIX, mare, de showroom — nu se scaleaza cu mobila (altfel se
+  // "intindea ca guma" la schimbarea dimensiunii). Dimensiuni generoase
+  // constante; mobila sta pe el indiferent de marime.
+  const rugW=3.8, rugD=2.2;
+  const rugCz=D*0.5+0.15; // usor in fata mobilei
   const rugTex=_covorTex().clone(); rugTex.wrapS=rugTex.wrapT=THREE.RepeatWrapping;
-  rugTex.repeat.set(Math.max(1,rugW/0.55), Math.max(1,rugD/0.55)); rugTex.needsUpdate=true;
+  rugTex.repeat.set(Math.max(1,rugW/0.5), Math.max(1,rugD/0.5)); rugTex.needsUpdate=true;
+  rugTex.anisotropy=8;
   const rugBump=_covorBump().clone(); rugBump.wrapS=rugBump.wrapT=THREE.RepeatWrapping;
   rugBump.repeat.copy(rugTex.repeat); rugBump.needsUpdate=true;
-  const covor=new THREE.Mesh(new THREE.PlaneGeometry(rugW,rugD),
-    new THREE.MeshStandardMaterial({map:rugTex,bumpMap:rugBump,bumpScale:0.006,roughness:0.98,metalness:0}));
-  covor.rotation.x=-Math.PI/2;covor.position.set(0,0.006,D*0.55);covor.receiveShadow=true;content.add(covor);
-  // bordura tesuta (rama)
+  const covor=new THREE.Mesh(new THREE.PlaneGeometry(rugW,rugD,1,1),
+    new THREE.MeshStandardMaterial({map:rugTex,bumpMap:rugBump,bumpScale:0.009,roughness:0.99,metalness:0}));
+  covor.rotation.x=-Math.PI/2;covor.position.set(0,0.006,rugCz);covor.receiveShadow=true;content.add(covor);
+  // bordura tesuta dubla (rama exterioara + linie interioara) — mai detaliat
   const bordBump=_covorBump().clone(); bordBump.wrapS=bordBump.wrapT=THREE.RepeatWrapping;
-  bordBump.repeat.set(Math.max(1,(rugW+0.15)/0.12),Math.max(1,(rugD+0.15)/0.12)); bordBump.needsUpdate=true;
-  const covorB=new THREE.Mesh(new THREE.PlaneGeometry(rugW+0.15,rugD+0.15),
-    new THREE.MeshStandardMaterial({color:"#9c876b",bumpMap:bordBump,bumpScale:0.004,roughness:1,metalness:0}));
-  covorB.rotation.x=-Math.PI/2;covorB.position.set(0,0.004,D*0.55);covorB.receiveShadow=true;content.add(covorB);
-  // franjuri (tort ivory) la cele doua capete scurte, iesind peste podea — InstancedMesh
+  bordBump.repeat.set(Math.max(1,(rugW+0.2)/0.1),Math.max(1,(rugD+0.2)/0.1)); bordBump.needsUpdate=true;
+  const covorB=new THREE.Mesh(new THREE.PlaneGeometry(rugW+0.2,rugD+0.2),
+    new THREE.MeshStandardMaterial({color:"#9c876b",bumpMap:bordBump,bumpScale:0.006,roughness:1,metalness:0}));
+  covorB.rotation.x=-Math.PI/2;covorB.position.set(0,0.004,rugCz);covorB.receiveShadow=true;content.add(covorB);
+  // franjuri (tort ivory) la cele doua capete scurte — mai dese pe covorul mare
   {
-    const zc=D*0.55, strandLen=0.06, gap=0.007;
+    const zc=rugCz, strandLen=0.07, gap=0.006;
     const nz=Math.max(4,Math.floor(rugD/gap)), count=nz*2;
     const fgeo=new THREE.BoxGeometry(strandLen,0.0032,0.0045);
-    fgeo.translate(strandLen/2,0,0); // pivot la capatul interior
+    fgeo.translate(strandLen/2,0,0);
     const fmat=new THREE.MeshStandardMaterial({color:"#e7dabf",roughness:1,metalness:0});
     const fringe=new THREE.InstancedMesh(fgeo,fmat,count);
     const dummy=new THREE.Object3D();
