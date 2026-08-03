@@ -631,7 +631,7 @@ function buildContent(cfg, tip){
   // mobila e mai multe corpuri alăturate. Calculăm câte corpuri și la ce
   // compartimente (turnuri) cade o îmbinare de corpuri — acolo desenăm un
   // dublu-perete (2 laterale lipite), vizibil diferit de un despărțitor simplu.
-  const latMaxCorp=(C.latimeMaximaCorp||900)/1000;
+  const latMaxCorp=((T.latimeMaximaCorp||C.latimeMaximaCorp||900))/1000;
   const nrCorpuri=Math.max(1,Math.ceil(L/latMaxCorp));
   const turnuriPerCorp=Math.ceil(nT/nrCorpuri);
   const eImbinareCorp=(idx)=> idx>0 && idx<nT && (idx % turnuriPerCorp===0);

@@ -95,6 +95,7 @@ export const CONFIG_TAMPLAR = {
   tipuri: {
     dulap: {
       nume: "Dulap",
+      latimeMaximaCorp: 900, // mm — realism atelier per tip
       suspendabil: false,
       suprapozabil: true,
       blat: false,
@@ -108,6 +109,7 @@ export const CONFIG_TAMPLAR = {
     },
     dressing: {
       nume: "Dressing",
+      latimeMaximaCorp: 1000, // mm — realism atelier per tip
       suspendabil: false,
       suprapozabil: true,
       blat: false,
@@ -121,6 +123,7 @@ export const CONFIG_TAMPLAR = {
     },
     comoda: {
       nume: "Comodă",
+      latimeMaximaCorp: 1200, // mm — realism atelier per tip
       suspendabil: true,
       suprapozabil: false,
       blat: true,
@@ -134,6 +137,7 @@ export const CONFIG_TAMPLAR = {
     },
     baie: {
       nume: "Dulap baie",
+      latimeMaximaCorp: 800, // mm — realism atelier per tip
       suspendabil: true,
       suprapozabil: false,
       blat: true,
