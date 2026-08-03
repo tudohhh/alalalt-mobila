@@ -661,12 +661,45 @@ function buildContent(cfg, tip){
       }
     }
     const tipComp = continutCompartiment(i);
-    if(tipComp==="deschis"){
+    if(tipComp==="deschis" || tipComp==="bara" || tipComp==="rafturi" || tipComp==="pantaloni" || tipComp==="cos"){
+      // spatele compartimentului
       box(latTurn,Hmain-2*t,0.006,xc,cy,-D/2+0.006,matExt);
-      const nr=Math.max(2,Math.round(Hmain/0.4));
-      for(let r=1;r<nr;r++) box(latTurn,t,D-0.03,xc,yBaza+t+(Hmain-2*t)*(r/nr),0);
-      const bara=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,latTurn-0.04,12),matMet);
-      bara.rotation.z=Math.PI/2;bara.position.set(xc,yBaza+Hmain-0.12,0.02);bara.castShadow=true;g.add(bara);
+      const echip = tipComp==="deschis" ? "mix" : tipComp;
+
+      if(echip==="rafturi" || echip==="mix"){
+        const nr=Math.max(2,Math.round(Hmain/0.4));
+        for(let r=1;r<nr;r++) box(latTurn,t,D-0.03,xc,yBaza+t+(Hmain-2*t)*(r/nr),0);
+      }
+      if(echip==="bara" || echip==="mix"){
+        // bară de haine + câteva umerașe sugerate
+        const bara=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.008,latTurn-0.04,12),matMet);
+        bara.rotation.z=Math.PI/2;bara.position.set(xc,yBaza+Hmain-0.12,0.02);bara.castShadow=true;g.add(bara);
+        if(echip==="bara"){ // haine agățate (dreptunghiuri subțiri) doar la bară pură
+          const matHaina=new THREE.MeshStandardMaterial({color:0x8a95a5,roughness:0.9});
+          for(let k=0;k<Math.max(2,Math.floor(latTurn/0.12));k++){
+            const hx=xc-latTurn/2+0.08+k*0.11;
+            if(hx<xc+latTurn/2-0.06){
+              const haina=new THREE.Mesh(new THREE.BoxGeometry(0.09,Math.min(0.8,Hmain*0.5),D*0.6),matHaina);
+              haina.position.set(hx,yBaza+Hmain-0.12-Math.min(0.8,Hmain*0.5)/2-0.03,-0.02);haina.castShadow=true;g.add(haina);
+            }
+          }
+        }
+      }
+      if(echip==="pantaloni"){
+        // suport de pantaloni: bare orizontale glisante
+        for(let k=0;k<5;k++){
+          const b=new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.006,latTurn-0.06,10),matMet);
+          b.rotation.x=Math.PI/2;b.position.set(xc,yBaza+Hmain*0.55+k*0.06,D*0.15);b.castShadow=true;g.add(b);
+        }
+      }
+      if(echip==="cos"){
+        // coș de rufe (plasă wireframe sugerată prin cutie translucidă)
+        const matCos=new THREE.MeshStandardMaterial({color:0x9a8f7d,roughness:0.85,transparent:true,opacity:0.7});
+        const cos=new THREE.Mesh(new THREE.BoxGeometry(latTurn-0.08,Math.min(0.5,Hmain*0.35),D-0.12),matCos);
+        cos.position.set(xc,yBaza+Math.min(0.5,Hmain*0.35)/2+0.05,0);cos.castShadow=true;g.add(cos);
+        // câteva rafturi deasupra coșului
+        for(let r=1;r<=2;r++) box(latTurn,t,D-0.03,xc,yBaza+Hmain*0.55+r*0.28,0);
+      }
       continue;
     }
     // câte sertare are ACEST compartiment (modular): sertare→toată înălțimea,

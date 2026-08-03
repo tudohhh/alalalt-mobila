@@ -161,7 +161,7 @@ function Config({tip,inapoi}){
               <div key={i} style={{display:"flex",alignItems:"center",gap:5,marginBottom:4}}>
                 <span style={{fontSize:11,color:"#8a8378",width:16}}>{i+1}</span>
                 <div style={{display:"flex",gap:3,flex:1}}>
-                  {[["usi","Uși"],["usi_sertare","Uși+sert"],["sertare","Sertare"],["deschis","Deschis"],["vitrina","Vitrină"]].map(([k,lbl])=>{
+                  {[["usi","Uși"],["usi_sertare","Uși+sert"],["sertare","Sertare"],["deschis","Deschis"],["bara","Bară haine"],["rafturi","Rafturi"],["pantaloni","Pantaloni"],["cos","Coș rufe"],["vitrina","Vitrină"]].map(([k,lbl])=>{
                     const cur=(compartimente[i]||"usi")===k;
                     return <button key={k} onClick={()=>{const c=[...compartimente];c[i]=k;setCompartimente(c);}}
                       style={{flex:1,padding:"5px 2px",borderRadius:7,cursor:"pointer",fontSize:9.5,fontWeight:600,
