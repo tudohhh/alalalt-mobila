@@ -133,19 +133,31 @@ function Config({tip,inapoi}){
 
       {/* PANOU CONTROALE — stanga, plutitor */}
       <div className="fz-panel" style={{...panou,left:18,top:64,bottom:16,width:272,overflowY:"auto",animationDelay:"80ms"}}>
-        <Sec>Pornire rapidă</Sec>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:4}}>
-          {Object.entries(C.modeleLayout).map(([k,m])=>(
-            <button key={k} onClick={()=>{
-              setModel(k);
-              // populează compartimentele cu layout-ul ales (Varianta 1):
-              const mdl=C.modeleLayout[k];
-              setCompartimente(Array.from({length:turnuri},(_,i)=>
-                mdl.deschis?"deschis":(mdl.vitrina&&i===turnuri-1)?"vitrina":(mdl.sertarePerTurn>0)?"usi_sertare":"usi"));
-            }} style={{padding:"8px 4px",borderRadius:9,cursor:"pointer",fontSize:11.5,fontWeight:600,border:model===k?"2px solid #a37e4a":"1px solid #e3ded5",background:model===k?"#faf6ef":"#fff",color:"#2a2622"}}>{m.nume}</button>))}
-        </div>
-        <div style={{fontSize:10.5,color:"#a89f8e",marginBottom:6}}>Alege un punct de plecare, apoi ajustează fiecare compartiment mai jos.</div>
         <Sec>Dimensiuni</Sec>
+        <Sl label="Lățime" v={latime} set={setLatime} min={L.latime.min} max={L.latime.max} step={L.latime.pas}/>
+        <Sl label="Înălțime" v={inaltime} set={setInaltime} min={L.inaltime.min} max={L.inaltime.max} step={L.inaltime.pas}/>
+        <Sl label="Adâncime" v={adancime} set={setAdancime} min={L.adancime.min} max={L.adancime.max} step={L.adancime.pas}/>
+        <div style={{fontSize:10.5,color:"#8a8378",margin:"2px 0 8px",padding:"7px 10px",borderRadius:9,background:"rgba(163,126,74,.06)",lineHeight:1.45}}>
+          {(()=>{ const lm=T.latimeMaximaCorp||C.latimeMaximaCorp||900; const nc=Math.max(1,Math.ceil(latime/lm));
+            return nc>1 ? `≈ ${nc} corpuri · peste ${lm/10} cm/corp se împarte (cum se produce real)` : "1 corp"; })()}
+        </div>
+        <Sl label="Turnuri" v={turnuri} set={setTurnuri} min={1} max={T.maxTurnuri} step={1} unit=""/>
+        <Sec hint="ce conține fiecare secțiune">Compartimente</Sec>
+        <div style={{marginBottom:8}}>
+          {(()=>{ const comp = compartimente || Array.from({length:turnuri},()=>"usi");
+            return Array.from({length:turnuri}).map((_,i)=>(
+              <div key={i} style={{marginBottom:8,padding:"9px 10px",borderRadius:12,background:"rgba(255,255,255,.5)",border:"1px solid rgba(0,0,0,.05)"}}>
+                <div style={{fontSize:10,fontWeight:700,color:"#b3a894",letterSpacing:.5,marginBottom:6}}>COMPARTIMENT {i+1}</div>
+                <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                  {[["usi","Uși"],["usi_sertare","Uși + sertare"],["sertare","Sertare"],["deschis","Deschis"],["bara","Bară haine"],["rafturi","Rafturi"],["pantaloni","Pantaloni"],["cos","Coș rufe"],["vitrina","Vitrină"]].map(([k,lbl])=>{
+                    const cur=(comp[i]||"usi")===k;
+                    return <button key={k} onClick={()=>{const c=[...comp];c[i]=k;setCompartimente(c);}} style={chip(cur)}>{lbl}</button>;
+                  })}
+                </div>
+              </div>
+            )); })()}
+        </div>
+
         <Sl label="Lățime" v={latime} set={setLatime} min={L.latime.min} max={L.latime.max} step={L.latime.pas}/>
         <Sl label="Înălțime" v={inaltime} set={setInaltime} min={L.inaltime.min} max={L.inaltime.max} step={L.inaltime.pas}/>
         <Sl label="Adâncime" v={adancime} set={setAdancime} min={L.adancime.min} max={L.adancime.max} step={L.adancime.pas}/>
@@ -155,24 +167,6 @@ function Config({tip,inapoi}){
         </div>
         <Sl label="Turnuri" v={turnuri} set={setTurnuri} min={1} max={T.maxTurnuri} step={1} unit=""/>
 
-        <Sec>Compartimente</Sec>
-        <div style={{marginBottom:6}}>
-          {(()=>{ const comp = compartimente || Array.from({length:turnuri},()=>"usi");
-            return Array.from({length:turnuri}).map((_,i)=>(
-              <div key={i} style={{display:"flex",alignItems:"center",gap:5,marginBottom:4}}>
-                <span style={{fontSize:11,color:"#8a8378",width:16}}>{i+1}</span>
-                <div style={{display:"flex",gap:3,flex:1,flexWrap:"wrap"}}>
-                  {[["usi","Uși"],["usi_sertare","Uși+sert"],["sertare","Sertare"],["deschis","Deschis"],["bara","Bară haine"],["rafturi","Rafturi"],["pantaloni","Pantaloni"],["cos","Coș rufe"],["vitrina","Vitrină"]].map(([k,lbl])=>{
-                    const cur=(comp[i]||"usi")===k;
-                    return <button key={k} onClick={()=>{const c=[...comp];c[i]=k;setCompartimente(c);}}
-                      style={{padding:"5px 7px",borderRadius:7,cursor:"pointer",fontSize:9.5,fontWeight:600,
-                        background:cur?"#a37e4a":"#fff",color:cur?"#fff":"#5a544a",
-                        border:cur?"1px solid #a37e4a":"1px solid #d8d2c6"}}>{lbl}</button>;
-                  })}
-                </div>
-              </div>
-            )); })()}
-        </div>
         {(T.suspendabil||T.suprapozabil)&&<Sec>Structură</Sec>}
         {T.suspendabil&&<Check label="Suspendat (pe perete)" v={suspendat} set={setSuspendat}/>}
         {T.suprapozabil&&<Check label="Corp suprapus (supantă)" v={suprapus} set={setSuprapus}/>}
@@ -274,10 +268,22 @@ function Config({tip,inapoi}){
   );
 }
 
-const panou={position:"absolute",background:"rgba(255,255,255,.9)",backdropFilter:"blur(10px)",borderRadius:18,padding:"14px 16px",boxShadow:"0 8px 32px rgba(40,30,20,.14)"};
+const panou={position:"absolute",background:"rgba(252,250,247,.82)",backdropFilter:"blur(18px) saturate(1.1)",borderRadius:22,padding:"18px 18px 20px",boxShadow:"0 12px 44px rgba(40,30,20,.16), inset 0 1px 0 rgba(255,255,255,.6)",border:"1px solid rgba(255,255,255,.5)"};
+const ACC="#a37e4a";
+const Sec=({children,hint})=>(<div style={{margin:"18px 0 9px",display:"flex",alignItems:"center",gap:8}}>
+  <span style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",letterSpacing:1.3,color:ACC}}>{children}</span>
+  <span style={{flex:1,height:1,background:"linear-gradient(90deg,rgba(163,126,74,.25),transparent)"}}/>
+  {hint&&<span style={{fontSize:9.5,color:"#b3a894",fontWeight:500,letterSpacing:0}}>{hint}</span>}
+</div>);
+// Chip: buton-pastilă reutilizabil, stare activă evidentă, tranziție lină.
+const chip=(activ)=>({padding:"7px 12px",borderRadius:10,cursor:"pointer",fontSize:11,fontWeight:600,
+  transition:"all .15s cubic-bezier(.4,0,.2,1)",whiteSpace:"nowrap",
+  background:activ?"linear-gradient(135deg,#b08a52,#a37e4a)":"rgba(255,255,255,.7)",
+  color:activ?"#fff":"#5a544a",
+  border:activ?"1px solid #96703d":"1px solid rgba(0,0,0,.08)",
+  boxShadow:activ?"0 3px 10px rgba(163,126,74,.3)":"0 1px 2px rgba(0,0,0,.03)"});
 const pill={background:"rgba(255,255,255,.85)",backdropFilter:"blur(8px)",border:"1px solid #e7e5e4",borderRadius:20,padding:"7px 14px",fontSize:13,color:"#a37e4a",cursor:"pointer"};
 const pillMic={width:"100%",background:"#faf6ef",border:"1px solid #eadfce",borderRadius:9,padding:"8px 0",fontSize:12,fontWeight:600,color:"#a37e4a",cursor:"pointer"};
-const Sec=({children})=><div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:"#a37e4a",margin:"13px 0 7px"}}>{children}</div>;
 const btn={width:28,height:28,borderRadius:7,border:"none",background:"#efe9e0",color:"#2a2622",fontSize:15,cursor:"pointer"};
 function Sl({label,v,set,min,max,step,unit="mm"}){return(<div style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:12.5,fontWeight:600}}>{label}</span><span style={{fontSize:12.5,color:"#8a8378"}}>{v} {unit}</span></div><div style={{display:"flex",alignItems:"center",gap:6}}><button onClick={()=>set(Math.max(min,v-step))} style={btn}>-</button><input type="range" min={min} max={max} step={step} value={v} onChange={e=>set(Number(e.target.value))} style={{flex:1,accentColor:"#a37e4a"}}/><button onClick={()=>set(Math.min(max,v+step))} style={btn}>+</button></div></div>);}
 function Check({label,v,set}){return(<label style={{display:"flex",gap:8,fontSize:12.5,marginBottom:7,cursor:"pointer",alignItems:"center"}}><input type="checkbox" checked={v} onChange={e=>set(e.target.checked)} style={{accentColor:"#a37e4a"}}/>{label}</label>);}
