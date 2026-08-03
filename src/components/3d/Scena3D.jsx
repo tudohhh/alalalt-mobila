@@ -847,20 +847,28 @@ export default function Scena3D({ cfg, tip, onReady }){
   useEffect(()=>{
     const scene=sceneRef.current, key=keyRef.current;
     if(!scene) return;
-    if(contentRef.current){ scene.remove(contentRef.current); _disposeContent(contentRef.current); }
-    const { group, yBaza, Htot, L, D }=buildContent(cfg, tip);
-    scene.add(group); contentRef.current=group;
+    // Reconstrucția (geometrie + covor) e scumpă. La tras de slider,
+    // dependințele se schimbă de zeci de ori/secundă → mobila se reconstruia
+    // la fiecare pixel, dând senzația de "gumă". Debounce: reconstruim la ~90ms
+    // după ULTIMA schimbare (când te oprești), nu la fiecare micro-pas.
+    const rebuild=()=>{
+      if(!sceneRef.current) return;
+      if(contentRef.current){ scene.remove(contentRef.current); _disposeContent(contentRef.current); }
+      const { group, yBaza, Htot, L, D }=buildContent(cfg, tip);
+      scene.add(group); contentRef.current=group;
 
-    const S=camState.current;
-    S.target.set(0,(yBaza+Htot)/2,0);
-    S.rRest=Math.max(L,Htot)*1.75+0.55;
+      const S=camState.current;
+      S.target.set(0,(yBaza+Htot)/2,0);
+      S.rRest=Math.max(L,Htot)*1.75+0.55;
 
-    // frustum de umbra care cuprinde mobila + planta + covor
-    const sExt=Math.max(L,D)*1.1+1.4;
-    key.shadow.camera.left=-sExt;key.shadow.camera.right=sExt;key.shadow.camera.top=sExt;key.shadow.camera.bottom=-sExt;
-    key.shadow.camera.near=0.5;key.shadow.camera.far=Math.max(18,(L+Htot+D)*2.5);
-    key.shadow.camera.updateProjectionMatrix();
-    needShadow.current=true;
+      const sExt=Math.max(L,D)*1.1+1.4;
+      key.shadow.camera.left=-sExt;key.shadow.camera.right=sExt;key.shadow.camera.top=sExt;key.shadow.camera.bottom=-sExt;
+      key.shadow.camera.near=0.5;key.shadow.camera.far=Math.max(18,(L+Htot+D)*2.5);
+      key.shadow.camera.updateProjectionMatrix();
+      needShadow.current=true;
+    };
+    const id=setTimeout(rebuild, 90);
+    return ()=>clearTimeout(id);
   },[cfg.latime,cfg.inaltime,cfg.adancime,cfg.turnuri,cfg.model,cfg.materialExt,cfg.materialFront,cfg.tipManer,JSON.stringify(cfg.compartimente),cfg.blat,cfg.suspendat,cfg.suprapus,tip]);
 
   return (
