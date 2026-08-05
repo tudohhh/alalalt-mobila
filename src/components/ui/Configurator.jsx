@@ -84,6 +84,17 @@ function Selector({onPick}){
   );
 }
 
+// Detectează ecran mic (mobil) ca să comutăm layout-ul: pe desktop panou
+// plutitor peste scenă; pe mobil scenă sus + panou dedesubt (stivuit).
+function useIsMobile(){
+  const [mob,setMob]=useState(typeof window!=="undefined" && window.innerWidth<768);
+  useEffect(()=>{
+    const on=()=>setMob(window.innerWidth<768);
+    window.addEventListener("resize",on); return ()=>window.removeEventListener("resize",on);
+  },[]);
+  return mob;
+}
+
 function Config({tip,inapoi}){
   const T=C.tipuri[tip],L=T.limite,d=T.default;
   const [latime,setLatime]=useState(d.latime);
@@ -118,21 +129,27 @@ function Config({tip,inapoi}){
     </div>
   );
 
+  const mobil=useIsMobile();
+
   return (
-    <div style={{position:"relative",width:"100vw",height:"100vh",overflow:"hidden",fontFamily:"system-ui,sans-serif",color:"#2a2622",background:"#efeae2"}}>
-      {/* SCENA — eroul, pe tot ecranul */}
-      <div style={{position:"absolute",inset:0}}>
+    <div style={{position:"relative",width:"100vw",minHeight:"100vh",height:mobil?"auto":"100vh",overflow:mobil?"auto":"hidden",fontFamily:"system-ui,sans-serif",color:"#2a2622",background:"#efeae2"}}>
+      {/* SCENA — pe mobil sus, fixă; pe desktop tot ecranul */}
+      <div style={mobil
+        ? {position:"sticky",top:0,left:0,width:"100%",height:"46vh",zIndex:1,background:"#efeae2"}
+        : {position:"absolute",inset:0}}>
         <Scena3D cfg={cfg} tip={tip} onReady={fn=>(capRef.current=fn)}/>
       </div>
 
       {/* HEADER plutitor */}
-      <div className="fz-panel" style={{position:"absolute",top:16,left:18,display:"flex",alignItems:"center",gap:14}}>
+      <div className="fz-panel" style={{position:"absolute",top:16,left:18,display:"flex",alignItems:"center",gap:14,zIndex:3}}>
         <button onClick={inapoi} style={{...pill,fontWeight:600}}>&larr; alt tip</button>
-        <div style={{fontFamily:DISPLAY,fontSize:22,fontWeight:700,textShadow:"0 1px 0 rgba(255,255,255,.6)"}}>{T.nume}</div>
+        <div style={{fontFamily:DISPLAY,fontSize:mobil?18:22,fontWeight:700,textShadow:"0 1px 0 rgba(255,255,255,.6)"}}>{T.nume}</div>
       </div>
 
-      {/* PANOU CONTROALE — stanga, plutitor */}
-      <div className="fz-panel" style={{...panou,left:18,top:64,bottom:16,width:272,overflowY:"auto",animationDelay:"80ms"}}>
+      {/* PANOU CONTROALE — desktop: plutitor stânga; mobil: dedesubt, în flux */}
+      <div className="fz-panel" style={mobil
+        ? {position:"relative",zIndex:2,margin:"0 10px 12px",padding:"14px 14px 18px",background:"rgba(252,250,247,.96)",borderRadius:20,boxShadow:"0 -6px 24px rgba(40,30,20,.12)"}
+        : {...panou,left:18,top:64,bottom:16,width:272,overflowY:"auto",animationDelay:"80ms"}}>
         <Sec>Dimensiuni</Sec>
         <Sl label="Lățime" v={latime} set={setLatime} min={L.latime.min} max={L.latime.max} step={L.latime.pas}/>
         <Sl label="Înălțime" v={inaltime} set={setInaltime} min={L.inaltime.min} max={L.inaltime.max} step={L.inaltime.pas}/>
@@ -228,8 +245,10 @@ function Config({tip,inapoi}){
         })}
       </div>
 
-      {/* PANOU PRET — dreapta, plutitor */}
-      <div className="fz-panel" style={{...panou,right:18,top:64,width:280,animationDelay:"140ms"}}>
+      {/* PANOU PRET — desktop: plutitor dreapta; mobil: în flux, sub controale */}
+      <div className="fz-panel" style={mobil
+        ? {position:"relative",zIndex:2,margin:"0 10px 14px",padding:"14px",background:"rgba(252,250,247,.96)",borderRadius:20,boxShadow:"0 4px 18px rgba(40,30,20,.1)"}
+        : {...panou,right:18,top:64,width:280,animationDelay:"140ms"}}>
         <div style={{fontSize:11,color:"#8a8378",letterSpacing:1,textTransform:"uppercase"}}>Estimare</div>
         {C.afisarePret&&(
           <div style={{fontFamily:DISPLAY,fontSize:38,fontWeight:800,color:"#a37e4a",letterSpacing:-1,margin:"2px 0 0",fontVariantNumeric:"tabular-nums"}}>
@@ -251,10 +270,10 @@ function Config({tip,inapoi}){
         <button onClick={spreFormular} style={{width:"100%",padding:"13px 0",borderRadius:12,border:"none",background:"#a37e4a",color:"#fff",fontSize:14.5,fontWeight:700,cursor:"pointer",boxShadow:"0 6px 18px rgba(163,126,74,.35)"}}>Solicită ofertă</button>
       </div>
 
-      {/* rezumat discret jos */}
-      <div style={{position:"absolute",left:"50%",bottom:14,transform:"translateX(-50%)",fontSize:11.5,color:"#7c766c",background:"rgba(255,255,255,.7)",backdropFilter:"blur(6px)",padding:"6px 14px",borderRadius:20,whiteSpace:"nowrap",maxWidth:"70vw",overflow:"hidden",textOverflow:"ellipsis"}}>
+      {/* rezumat discret jos — doar pe desktop (pe mobil aglomerează) */}
+      {!mobil&&<div style={{position:"absolute",left:"50%",bottom:14,transform:"translateX(-50%)",fontSize:11.5,color:"#7c766c",background:"rgba(255,255,255,.7)",backdropFilter:"blur(6px)",padding:"6px 14px",borderRadius:20,whiteSpace:"nowrap",maxWidth:"70vw",overflow:"hidden",textOverflow:"ellipsis"}}>
         {latime}×{inaltime}×{adancime} mm · {C.modeleLayout[model].nume} · {turnuri} turnuri
-      </div>
+      </div>}
     </div>
   );
 }
