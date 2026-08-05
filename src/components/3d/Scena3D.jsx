@@ -784,7 +784,7 @@ export default function Scena3D({ cfg, tip, onReady }){
     rnd.toneMapping=THREE.ACESFilmicToneMapping;rnd.toneMappingExposure=1.05;
     el.appendChild(rnd.domElement);
 
-    scene.background=new THREE.Color("#efeae2");
+    scene.background=new THREE.Color("#0d141e");
     scene.fog=new THREE.Fog("#efeae2",8,22);
 
     // lumini: key cald + fill rece + rim. Frustumul de umbra se seteaza in rebuild (dupa dimensiuni).

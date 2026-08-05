@@ -9,20 +9,25 @@ import Scena3D from "../3d/Scena3D.jsx";
 import Formular from "../ui/Formular.jsx";
 import Bucatarie from "../3d/Bucatarie.jsx";
 
-// ——— tipografie: Fraunces pentru display, injectat o singura data ———
+// ——— tipografie: Fraunces (display) + Space Grotesk (tehnic/SF), injectat o data ———
 (function fonturi(){
   if(document.getElementById("font-fraunces"))return;
   const l=document.createElement("link");l.id="font-fraunces";l.rel="stylesheet";
-  l.href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&display=swap";
+  l.href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=Space+Grotesk:wght@400;500;600;700&display=swap";
   document.head.appendChild(l);
   const s=document.createElement("style");s.textContent=`
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes sfGlow{0%,100%{box-shadow:0 0 20px rgba(56,208,255,.15),0 12px 44px rgba(0,10,20,.5),inset 0 1px 0 rgba(120,220,255,.15)}50%{box-shadow:0 0 28px rgba(56,208,255,.25),0 12px 44px rgba(0,10,20,.5),inset 0 1px 0 rgba(120,220,255,.2)}}
     .fz-panel{animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both}
     .fz-in{animation:fadeIn .5s ease both}
     .fz-linie{animation:fadeUp .3s ease both}
+    .sf-panel{position:relative}
+    .sf-panel::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(56,208,255,.5),rgba(120,90,255,.15) 40%,transparent 70%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
   `;document.head.appendChild(s);
 })();
+
+const TECH="'Space Grotesk',system-ui,sans-serif";
 
 const DISPLAY="'Fraunces',Georgia,serif";
 const lei=n=>Math.round(n).toLocaleString("ro-RO")+" lei";
@@ -66,18 +71,18 @@ function Selector({onPick}){
   const optiuni=[...Object.entries(C.tipuri).map(([k,t])=>({k,nume:t.nume,sub:"configurare liberă"})),
     {k:"bucatarie",nume:"Bucătărie",sub:"estimare pe metru liniar"}];
   return (
-    <div className="fz-in" style={{minHeight:"100vh",background:"#f4f1ec",fontFamily:"system-ui,sans-serif",color:"#2a2622",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24}}>
-      <div style={{fontSize:11,letterSpacing:3,textTransform:"uppercase",color:"#a37e4a",fontWeight:700}}>Atelier mobilă</div>
+    <div className="fz-in" style={{minHeight:"100vh",background:"#070b12",fontFamily:"system-ui,sans-serif",color:"#dce8f0",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24}}>
+      <div style={{fontSize:11,letterSpacing:3,textTransform:"uppercase",color:"#38d0ff",fontWeight:700}}>Atelier mobilă</div>
       <h1 style={{fontFamily:DISPLAY,fontSize:44,fontWeight:700,margin:"10px 0 6px",letterSpacing:-.5}}>Mobila ta, pe măsura ta.</h1>
-      <p style={{color:"#8a8378",marginBottom:34,fontSize:15}}>Alege tipul, configurează în 3D, vezi prețul pe loc.</p>
+      <p style={{color:"#8399ab",marginBottom:34,fontSize:15}}>Alege tipul, configurează în 3D, vezi prețul pe loc.</p>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,168px)",gap:14,justifyContent:"center",maxWidth:960}}>
         {optiuni.map((o,i)=>(
-          <button key={o.k} onClick={()=>onPick(o.k)} className="fz-panel" style={{animationDelay:`${i*60}ms`,background:"#fff",border:"1px solid #e7e5e4",borderRadius:18,padding:"24px 12px 18px",cursor:"pointer",boxShadow:"0 2px 10px rgba(40,30,20,.06)",transition:"transform .18s,box-shadow .18s"}}
+          <button key={o.k} onClick={()=>onPick(o.k)} className="fz-panel sf-panel" style={{animationDelay:`${i*60}ms`,background:"rgba(255,255,255,.04)",border:"1px solid rgba(56,208,255,.18)",borderRadius:18,padding:"24px 12px 18px",cursor:"pointer",boxShadow:"0 2px 10px rgba(40,30,20,.06)",transition:"transform .18s,box-shadow .18s"}}
             onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 10px 26px rgba(40,30,20,.13)";}}
             onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow="0 2px 10px rgba(40,30,20,.06)";}}>
             <Icon tip={o.k}/>
             <div style={{marginTop:12,fontWeight:700,fontSize:15}}>{o.nume}</div>
-            <div style={{fontSize:11,color:"#a8a29e",marginTop:3}}>{o.sub}</div>
+            <div style={{fontSize:11,color:"#5f7385",marginTop:3}}>{o.sub}</div>
           </button>))}
       </div>
     </div>
@@ -124,7 +129,7 @@ function Config({tip,inapoi}){
   const spreFormular=()=>{setPoza(capRef.current?capRef.current():null);setFaza("formular");};
 
   if(faza==="formular") return (
-    <div className="fz-in" style={{minHeight:"100vh",background:"#f4f1ec",fontFamily:"system-ui,sans-serif",color:"#2a2622",padding:24}}>
+    <div className="fz-in" style={{minHeight:"100vh",background:"#070b12",fontFamily:"system-ui,sans-serif",color:"#dce8f0",padding:24}}>
       <Formular rezumat={rezumat} deviz={deviz} poza={poza} inapoi={()=>setFaza("config")}/>
     </div>
   );
@@ -132,29 +137,29 @@ function Config({tip,inapoi}){
   const mobil=useIsMobile();
 
   return (
-    <div style={{position:"relative",width:"100vw",minHeight:"100vh",height:mobil?"auto":"100vh",overflow:mobil?"auto":"hidden",fontFamily:"system-ui,sans-serif",color:"#2a2622",background:"#efeae2"}}>
+    <div style={{position:"relative",width:"100vw",minHeight:"100vh",height:mobil?"auto":"100vh",overflow:mobil?"auto":"hidden",fontFamily:"system-ui,sans-serif",color:"#dce8f0",background:"#070b12"}}>
       {/* SCENA — pe mobil sus, fixă; pe desktop tot ecranul */}
       <div style={mobil
-        ? {position:"sticky",top:0,left:0,width:"100%",height:"46vh",zIndex:1,background:"#efeae2"}
+        ? {position:"sticky",top:0,left:0,width:"100%",height:"46vh",zIndex:1,background:"#070b12"}
         : {position:"absolute",inset:0}}>
         <Scena3D cfg={cfg} tip={tip} onReady={fn=>(capRef.current=fn)}/>
       </div>
 
       {/* HEADER plutitor */}
-      <div className="fz-panel" style={{position:"absolute",top:16,left:18,display:"flex",alignItems:"center",gap:14,zIndex:3}}>
+      <div className="fz-panel sf-panel" style={{position:"absolute",top:16,left:18,display:"flex",alignItems:"center",gap:14,zIndex:3}}>
         <button onClick={inapoi} style={{...pill,fontWeight:600}}>&larr; alt tip</button>
         <div style={{fontFamily:DISPLAY,fontSize:mobil?18:22,fontWeight:700,textShadow:"0 1px 0 rgba(255,255,255,.6)"}}>{T.nume}</div>
       </div>
 
       {/* PANOU CONTROALE — desktop: plutitor stânga; mobil: dedesubt, în flux */}
-      <div className="fz-panel" style={mobil
+      <div className="fz-panel sf-panel" style={mobil
         ? {position:"relative",zIndex:2,margin:"0 10px 12px",padding:"14px 14px 18px",background:"rgba(252,250,247,.96)",borderRadius:20,boxShadow:"0 -6px 24px rgba(40,30,20,.12)"}
         : {...panou,left:18,top:64,bottom:16,width:272,overflowY:"auto",animationDelay:"80ms"}}>
         <Sec>Dimensiuni</Sec>
         <Sl label="Lățime" v={latime} set={setLatime} min={L.latime.min} max={L.latime.max} step={L.latime.pas}/>
         <Sl label="Înălțime" v={inaltime} set={setInaltime} min={L.inaltime.min} max={L.inaltime.max} step={L.inaltime.pas}/>
         <Sl label="Adâncime" v={adancime} set={setAdancime} min={L.adancime.min} max={L.adancime.max} step={L.adancime.pas}/>
-        <div style={{fontSize:10.5,color:"#8a8378",margin:"2px 0 8px",padding:"7px 10px",borderRadius:9,background:"rgba(163,126,74,.06)",lineHeight:1.45}}>
+        <div style={{fontSize:10.5,color:"#8399ab",margin:"2px 0 8px",padding:"7px 10px",borderRadius:9,background:"rgba(56,208,255,.08)",lineHeight:1.45}}>
           {(()=>{ const lm=T.latimeMaximaCorp||C.latimeMaximaCorp||900; const nc=Math.max(1,Math.ceil(latime/lm));
             return nc>1 ? `≈ ${nc} corpuri · peste ${lm/10} cm/corp se împarte (cum se produce real)` : "1 corp"; })()}
         </div>
@@ -187,7 +192,7 @@ function Config({tip,inapoi}){
                 border:materialExt===n?"2.5px solid #a37e4a":"1px solid rgba(0,0,0,.1)",
                 boxShadow:materialExt===n?"0 0 0 3px rgba(163,126,74,.25)":"inset 0 0 0 1px rgba(255,255,255,.25)"}}/>))}
         </div>
-        <div style={{fontSize:11.5,color:"#8a8378",marginBottom:4}}>{materialExt} · {C.materialeCorp[materialExt].pretMp} lei/mp</div>
+        <div style={{fontSize:11.5,color:"#8399ab",marginBottom:4}}>{materialExt} · {C.materialeCorp[materialExt].pretMp} lei/mp</div>
 
         <Sec>Fronturi</Sec>
         <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:7,marginBottom:6}}>
@@ -202,7 +207,7 @@ function Config({tip,inapoi}){
                 border:materialFront===n?"2.5px solid #a37e4a":"1px solid rgba(0,0,0,.1)",
                 boxShadow:materialFront===n?"0 0 0 3px rgba(163,126,74,.25)":"inset 0 0 0 1px rgba(255,255,255,.25)"}}/>))}
         </div>
-        <div style={{fontSize:11.5,color:"#8a8378",marginBottom:4}}>{materialFront?`Fronturi: ${materialFront}`:"Fronturi la fel ca corpul"}</div>
+        <div style={{fontSize:11.5,color:"#8399ab",marginBottom:4}}>{materialFront?`Fronturi: ${materialFront}`:"Fronturi la fel ca corpul"}</div>
 
         <Sec>Mânere</Sec>
         <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:6}}>
@@ -222,7 +227,7 @@ function Config({tip,inapoi}){
                   background:b.hex||"repeating-linear-gradient(45deg,#eee,#eee 4px,#ddd 4px,#ddd 8px)",
                   border:blat===n?"2.5px solid #a37e4a":"1px solid rgba(0,0,0,.12)"}}/>))}
           </div>
-          <div style={{fontSize:11.5,color:"#8a8378",margin:"4px 0"}}>{blat}</div></>}
+          <div style={{fontSize:11.5,color:"#8399ab",margin:"4px 0"}}>{blat}</div></>}
 
         <Sec>Accesorii</Sec>
         {Object.entries(C.accesoriiCategorii).map(([cat,items])=>{
@@ -230,15 +235,15 @@ function Config({tip,inapoi}){
           const open=openCat===cat;
           return (
             <div key={cat} style={{borderBottom:"1px solid #f0ece5"}}>
-              <button onClick={()=>setOpenCat(open?null:cat)} style={{width:"100%",display:"flex",justifyContent:"space-between",padding:"9px 0",background:"none",border:"none",cursor:"pointer",fontSize:12.5,fontWeight:700,color:"#2a2622"}}>
-                <span>{cat} {nrSel>0&&<span style={{color:"#a37e4a",fontSize:11}}>({nrSel})</span>}</span>
-                <span style={{color:"#a8a29e"}}>{open?"\u25b2":"\u25bc"}</span>
+              <button onClick={()=>setOpenCat(open?null:cat)} style={{width:"100%",display:"flex",justifyContent:"space-between",padding:"9px 0",background:"none",border:"none",cursor:"pointer",fontSize:12.5,fontWeight:700,color:"#dce8f0"}}>
+                <span>{cat} {nrSel>0&&<span style={{color:"#38d0ff",fontSize:11}}>({nrSel})</span>}</span>
+                <span style={{color:"#5f7385"}}>{open?"\u25b2":"\u25bc"}</span>
               </button>
               {open&&<div style={{paddingBottom:8}}>{Object.entries(items).map(([nume,a])=>(
                 <label key={nume} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0",cursor:"pointer",fontSize:12}}>
                   <input type="checkbox" checked={accesoriiSel.includes(nume)} onChange={()=>toggleAcc(nume)} style={{accentColor:"#a37e4a"}}/>
                   <span style={{flex:1}}>{nume}</span>
-                  {C.afisarePret&&<span style={{fontSize:10.5,color:"#8a8378"}}>{a.pret} lei/{umRegula(a.regula)}</span>}
+                  {C.afisarePret&&<span style={{fontSize:10.5,color:"#8399ab"}}>{a.pret} lei/{umRegula(a.regula)}</span>}
                 </label>))}</div>}
             </div>
           );
@@ -246,15 +251,15 @@ function Config({tip,inapoi}){
       </div>
 
       {/* PANOU PRET — desktop: plutitor dreapta; mobil: în flux, sub controale */}
-      <div className="fz-panel" style={mobil
+      <div className="fz-panel sf-panel" style={mobil
         ? {position:"relative",zIndex:2,margin:"0 10px 14px",padding:"14px",background:"rgba(252,250,247,.96)",borderRadius:20,boxShadow:"0 4px 18px rgba(40,30,20,.1)"}
         : {...panou,right:18,top:64,width:280,animationDelay:"140ms"}}>
-        <div style={{fontSize:11,color:"#8a8378",letterSpacing:1,textTransform:"uppercase"}}>Estimare</div>
+        <div style={{fontSize:11,color:"#8399ab",letterSpacing:1,textTransform:"uppercase"}}>Estimare</div>
         {C.afisarePret&&(
-          <div style={{fontFamily:DISPLAY,fontSize:38,fontWeight:800,color:"#a37e4a",letterSpacing:-1,margin:"2px 0 0",fontVariantNumeric:"tabular-nums"}}>
+          <div style={{fontFamily:DISPLAY,fontSize:38,fontWeight:800,color:"#38d0ff",letterSpacing:-1,margin:"2px 0 0",fontVariantNumeric:"tabular-nums"}}>
             {lei(pretA)}
           </div>)}
-        <div style={{fontSize:11,color:"#a8a29e",marginBottom:10}}>Estimare inițială — oferta finală după măsurători, împreună cu echipa noastră.</div>
+        <div style={{fontSize:11,color:"#5f7385",marginBottom:10}}>Estimare inițială — oferta finală după măsurători, împreună cu echipa noastră.</div>
         <button onClick={()=>setDetalii(!detalii)} style={{...pillMic,marginBottom:detalii?8:12}}>{detalii?"Ascunde detaliile":"Vezi detaliile devizului"}</button>
         {detalii&&(
           <div style={{maxHeight:230,overflowY:"auto",marginBottom:12}}>
@@ -262,38 +267,38 @@ function Config({tip,inapoi}){
               <tbody>{deviz.linii.map((l,i)=>(
                 <tr key={l.desc+i} className="fz-linie" style={{borderTop:"1px solid #f0ece5",background:l.acc?"#faf6ef":"none"}}>
                   <td style={{padding:"4px 0"}}>{l.desc}</td>
-                  <td style={{textAlign:"right",color:"#8a8378",whiteSpace:"nowrap",paddingLeft:6}}>{num(l.cant,(l.um==="buc"||l.um==="set")?0:2)} {l.um}</td>
+                  <td style={{textAlign:"right",color:"#8399ab",whiteSpace:"nowrap",paddingLeft:6}}>{num(l.cant,(l.um==="buc"||l.um==="set")?0:2)} {l.um}</td>
                   {C.afisarePret&&<td style={{textAlign:"right",whiteSpace:"nowrap",paddingLeft:6}}>{l.total>0?lei(l.total):"\u2014"}</td>}
                 </tr>))}</tbody>
             </table>
           </div>)}
-        <button onClick={spreFormular} style={{width:"100%",padding:"13px 0",borderRadius:12,border:"none",background:"#a37e4a",color:"#fff",fontSize:14.5,fontWeight:700,cursor:"pointer",boxShadow:"0 6px 18px rgba(163,126,74,.35)"}}>Solicită ofertă</button>
+        <button onClick={spreFormular} style={{width:"100%",padding:"13px 0",borderRadius:10,border:"1px solid rgba(120,220,255,.8)",background:"linear-gradient(135deg,#38d0ff,#2896e6)",color:"#04121c",fontSize:14,fontWeight:700,fontFamily:TECH,letterSpacing:.5,cursor:"pointer",boxShadow:"0 0 20px rgba(56,208,255,.5)"}}>SOLICITĂ OFERTĂ</button>
       </div>
 
       {/* rezumat discret jos — doar pe desktop (pe mobil aglomerează) */}
-      {!mobil&&<div style={{position:"absolute",left:"50%",bottom:14,transform:"translateX(-50%)",fontSize:11.5,color:"#7c766c",background:"rgba(255,255,255,.7)",backdropFilter:"blur(6px)",padding:"6px 14px",borderRadius:20,whiteSpace:"nowrap",maxWidth:"70vw",overflow:"hidden",textOverflow:"ellipsis"}}>
+      {!mobil&&<div style={{position:"absolute",left:"50%",bottom:14,transform:"translateX(-50%)",fontSize:11.5,color:"#8399ab",background:"rgba(255,255,255,.7)",backdropFilter:"blur(6px)",padding:"6px 14px",borderRadius:20,whiteSpace:"nowrap",maxWidth:"70vw",overflow:"hidden",textOverflow:"ellipsis"}}>
         {latime}×{inaltime}×{adancime} mm · {C.modeleLayout[model].nume} · {turnuri} turnuri
       </div>}
     </div>
   );
 }
 
-const panou={position:"absolute",background:"rgba(252,250,247,.82)",backdropFilter:"blur(18px) saturate(1.1)",borderRadius:22,padding:"18px 18px 20px",boxShadow:"0 12px 44px rgba(40,30,20,.16), inset 0 1px 0 rgba(255,255,255,.6)",border:"1px solid rgba(255,255,255,.5)"};
-const ACC="#a37e4a";
+const panou={position:"absolute",background:"rgba(14,20,30,.72)",backdropFilter:"blur(20px) saturate(1.2)",borderRadius:18,padding:"18px 18px 20px",boxShadow:"0 0 24px rgba(56,208,255,.12), 0 12px 44px rgba(0,8,16,.5), inset 0 1px 0 rgba(120,220,255,.12)",border:"1px solid rgba(56,208,255,.18)",color:"#dce8f0"};
+const ACC="#38d0ff";
 const Sec=({children,hint})=>(<div style={{margin:"18px 0 9px",display:"flex",alignItems:"center",gap:8}}>
-  <span style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",letterSpacing:1.3,color:ACC}}>{children}</span>
-  <span style={{flex:1,height:1,background:"linear-gradient(90deg,rgba(163,126,74,.25),transparent)"}}/>
-  {hint&&<span style={{fontSize:9.5,color:"#b3a894",fontWeight:500,letterSpacing:0}}>{hint}</span>}
+  <span style={{fontFamily:TECH,fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:2,color:ACC,textShadow:"0 0 8px rgba(56,208,255,.5)"}}>{children}</span>
+  <span style={{flex:1,height:1,background:"linear-gradient(90deg,rgba(56,208,255,.4),transparent)"}}/>
+  {hint&&<span style={{fontFamily:TECH,fontSize:9,color:"#6a8296",fontWeight:400,letterSpacing:.5}}>{hint}</span>}
 </div>);
-// Chip: buton-pastilă reutilizabil, stare activă evidentă, tranziție lină.
-const chip=(activ)=>({padding:"7px 12px",borderRadius:10,cursor:"pointer",fontSize:11,fontWeight:600,
-  transition:"all .15s cubic-bezier(.4,0,.2,1)",whiteSpace:"nowrap",
-  background:activ?"linear-gradient(135deg,#b08a52,#a37e4a)":"rgba(255,255,255,.7)",
-  color:activ?"#fff":"#5a544a",
-  border:activ?"1px solid #96703d":"1px solid rgba(0,0,0,.08)",
-  boxShadow:activ?"0 3px 10px rgba(163,126,74,.3)":"0 1px 2px rgba(0,0,0,.03)"});
-const pill={background:"rgba(255,255,255,.85)",backdropFilter:"blur(8px)",border:"1px solid #e7e5e4",borderRadius:20,padding:"7px 14px",fontSize:13,color:"#a37e4a",cursor:"pointer"};
-const pillMic={width:"100%",background:"#faf6ef",border:"1px solid #eadfce",borderRadius:9,padding:"8px 0",fontSize:12,fontWeight:600,color:"#a37e4a",cursor:"pointer"};
-const btn={width:28,height:28,borderRadius:7,border:"none",background:"#efe9e0",color:"#2a2622",fontSize:15,cursor:"pointer"};
-function Sl({label,v,set,min,max,step,unit="mm"}){return(<div style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:12.5,fontWeight:600}}>{label}</span><span style={{fontSize:12.5,color:"#8a8378"}}>{v} {unit}</span></div><div style={{display:"flex",alignItems:"center",gap:6}}><button onClick={()=>set(Math.max(min,v-step))} style={btn}>-</button><input type="range" min={min} max={max} step={step} value={v} onChange={e=>set(Number(e.target.value))} style={{flex:1,accentColor:"#a37e4a"}}/><button onClick={()=>set(Math.min(max,v+step))} style={btn}>+</button></div></div>);}
+// Chip SF: buton-pastilă cu glow pe activ, tranziție lină.
+const chip=(activ)=>({padding:"7px 12px",borderRadius:8,cursor:"pointer",fontSize:11,fontWeight:600,fontFamily:TECH,
+  transition:"all .15s cubic-bezier(.4,0,.2,1)",whiteSpace:"nowrap",letterSpacing:.3,
+  background:activ?"linear-gradient(135deg,rgba(56,208,255,.9),rgba(40,150,230,.9))":"rgba(255,255,255,.05)",
+  color:activ?"#04121c":"#9fb4c4",
+  border:activ?"1px solid rgba(120,220,255,.8)":"1px solid rgba(120,180,220,.15)",
+  boxShadow:activ?"0 0 14px rgba(56,208,255,.5)":"none"});
+const pill={background:"rgba(20,28,40,.8)",backdropFilter:"blur(8px)",border:"1px solid rgba(56,208,255,.25)",borderRadius:20,padding:"7px 14px",fontSize:13,fontFamily:TECH,color:"#38d0ff",cursor:"pointer"};
+const pillMic={width:"100%",background:"rgba(56,208,255,.08)",border:"1px solid rgba(56,208,255,.25)",borderRadius:8,padding:"8px 0",fontSize:12,fontWeight:600,fontFamily:TECH,color:"#38d0ff",cursor:"pointer"};
+const btn={width:28,height:28,borderRadius:7,border:"none",background:"#efe9e0",color:"#dce8f0",fontSize:15,cursor:"pointer"};
+function Sl({label,v,set,min,max,step,unit="mm"}){return(<div style={{marginBottom:10}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}><span style={{fontSize:12.5,fontWeight:600}}>{label}</span><span style={{fontSize:12.5,color:"#8399ab"}}>{v} {unit}</span></div><div style={{display:"flex",alignItems:"center",gap:6}}><button onClick={()=>set(Math.max(min,v-step))} style={btn}>-</button><input type="range" min={min} max={max} step={step} value={v} onChange={e=>set(Number(e.target.value))} style={{flex:1,accentColor:"#a37e4a"}}/><button onClick={()=>set(Math.min(max,v+step))} style={btn}>+</button></div></div>);}
 function Check({label,v,set}){return(<label style={{display:"flex",gap:8,fontSize:12.5,marginBottom:7,cursor:"pointer",alignItems:"center"}}><input type="checkbox" checked={v} onChange={e=>set(e.target.checked)} style={{accentColor:"#a37e4a"}}/>{label}</label>);}
