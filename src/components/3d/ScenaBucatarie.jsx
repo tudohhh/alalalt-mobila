@@ -126,14 +126,37 @@ function buildBucatarie(corpuri, culoareFront, culoareBlat, suspendate = true) {
   const matMet = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.3, metalness: 0.9 });
   const matInox = new THREE.MeshStandardMaterial({ color: 0xc8ccce, roughness: 0.25, metalness: 0.85 });
 
+  let dest = g; // grupul în care se desenează corpul curent (se schimbă la colț)
   const box = (w, h, d, x, y, z, m) => {
     const me = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m || matCorp);
-    me.position.set(x, y, z); me.castShadow = true; me.receiveShadow = true; g.add(me); return me;
+    me.position.set(x, y, z); me.castShadow = true; me.receiveShadow = true; dest.add(me); return me;
   };
 
-  let x = -latTot / 2; // pornim din stânga
+  // Rândul 1 se așază pe X. La corpul "colt", următoarele corpuri trec pe un
+  // al doilea perete: un sub-grup rotit 90° și poziționat la colț (forma L).
+  let x = -latTot / 2;
+  let dupaColt = false, xColt = 0;
   for (const c of lista) {
     const w = c.latime / 1000;
+
+    // La întâlnirea colțului: pivotăm — desenăm colțul pe rândul curent, apoi
+    // pornim un sub-grup pentru al doilea perete.
+    if (c.tip === "colt" && !dupaColt) {
+      const xc = x + w / 2;
+      const frontZ = Db / 2 + 0.004;
+      box(w, Hb, Db, xc, Hb / 2, 0, matCorp);
+      box(w - 0.03, Hb - 0.03, 0.018, xc, Hb / 2, frontZ, matFront);
+      // pornim al doilea perete: sub-grup rotit 90° în jurul colțului
+      const rand2 = new THREE.Group();
+      rand2.position.set(x + w, 0, 0);      // capătul colțului
+      rand2.rotation.y = -Math.PI / 2;       // cotim 90° (spre spate)
+      g.add(rand2);
+      dest = rand2;
+      dupaColt = true;
+      x = 0;                                 // în sub-grup pornim de la 0
+      continue;
+    }
+
     const xc = x + w / 2;
     const frontZ = Db / 2 + 0.004;
 
@@ -183,7 +206,7 @@ function buildBucatarie(corpuri, culoareFront, culoareBlat, suspendate = true) {
       for (const [ox, oz] of [[-0.15, -0.12], [0.15, -0.12], [-0.15, 0.12], [0.15, 0.12]]) {
         const arz = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.004, 20),
           new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.4, metalness: 0.5 }));
-        arz.position.set(xc + ox, Hb + gBlat + 0.023, 0.02 + oz); g.add(arz);
+        arz.position.set(xc + ox, Hb + gBlat + 0.023, 0.02 + oz); dest.add(arz);
       }
       // hotă suspendată deasupra
       const hota = box(w * 0.9, 0.12, Db * 0.6, xc, Hb + gBlat + 0.75, 0.05, matInox);
@@ -202,39 +225,41 @@ function buildBucatarie(corpuri, culoareFront, culoareBlat, suspendate = true) {
     x += w;
   }
 
-  // blat continuu — dar întrerupt de electrocasnicele înalte (frigider).
-  // Desenăm segmente de blat între frigidere, peste corpurile joase.
-  if (latTot > 0) {
-    let segStart = -latTot / 2, cursor = -latTot / 2;
+  // blat + suspendate: pentru acest pas se desenează pe rândul 1 (până la colț).
+  // Rândul 2 (după colț) primește blat/suspendate într-o rafinare ulterioară.
+  const rand1 = [];
+  for (const c of lista) { if (c.tip === "colt") break; rand1.push(c); }
+  const latRand1 = rand1.reduce((s, c) => s + c.latime / 1000, 0);
+  const xStart = -latTot / 2;
+  dest = g;
+
+  if (latRand1 > 0) {
+    let segStart = xStart, cursor = xStart;
     const inchideSegment = (end) => {
       if (end - segStart > 0.05) {
         const segW = end - segStart;
         box(segW + 0.02, gBlat, Db + 0.02, segStart + segW / 2, Hb + gBlat / 2, 0, matBlat);
       }
     };
-    for (const c of lista) {
+    for (const c of rand1) {
       const w = c.latime / 1000;
       if (c.tip === "frigider") { inchideSegment(cursor); segStart = cursor + w; }
       cursor += w;
     }
-    inchideSegment(latTot / 2);
+    inchideSegment(xStart + latRand1);
   }
 
-  // CORPURI SUSPENDATE: dulăpioare sus, pe perete, deasupra corpurilor joase.
-  // Nu peste frigider (deja înalt) și nu peste plită (acolo e hota).
   if (suspendate) {
-    const ySus = Hb + gBlat + 0.55;      // spațiul de faianță între blat și sus
-    const Hsus = 0.72, Dsus = Db * 0.62; // corpuri sus mai puțin adânci
-    let cx = -latTot / 2;
-    for (const c of lista) {
+    const ySus = Hb + gBlat + 0.55;
+    const Hsus = 0.72, Dsus = Db * 0.62;
+    let cx = xStart;
+    for (const c of rand1) {
       const w = c.latime / 1000;
       const xc = cx + w / 2;
       const areSus = c.tip !== "frigider" && c.tip !== "plita" && c.tip !== "colt";
       if (areSus) {
         const fz = Dsus / 2 + 0.004;
-        // carcasă sus
         box(w - 0.02, Hsus, Dsus, xc, ySus + Hsus / 2, -(Db - Dsus) / 2, matCorp);
-        // uși sus (1-2)
         const nu = w > 0.5 ? 2 : 1, uw = (w - 0.03) / nu;
         for (let u = 0; u < nu; u++) {
           const ux = xc - w / 2 + 0.015 + uw / 2 + u * uw;
