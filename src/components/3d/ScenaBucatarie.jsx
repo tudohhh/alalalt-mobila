@@ -167,6 +167,34 @@ function buildBucatarie(corpuri, culoareFront, culoareBlat) {
       box(w - 0.03, Hb * 0.55, 0.02, xc, Hb * 0.6, frontZ, new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3, metalness: 0.6 }));
       box(w - 0.06, Hb * 0.4, 0.006, xc, Hb * 0.6, frontZ + 0.006, new THREE.MeshStandardMaterial({ color: 0x2e3438, roughness: 0.15, metalness: 0.3 }));
       box(w - 0.03, Hb * 0.3, 0.018, xc, Hb * 0.18, frontZ, matFront);
+    } else if (c.tip === "frigider") {
+      // frigider înalt (depășește blatul) — două uși inox
+      const Hf = Hb + gBlat + 0.7;
+      box(w - 0.02, Hf, Db, xc, Hf / 2, 0, matInox);
+      // linie de separație uși + mânere verticale
+      box(w - 0.04, 0.006, 0.006, xc, Hf * 0.62, frontZ, matMet);
+      box(0.02, 0.5, 0.02, xc - w / 2 + 0.06, Hf * 0.35, frontZ, matMet);
+      box(0.02, 0.3, 0.02, xc - w / 2 + 0.06, Hf * 0.8, frontZ, matMet);
+    } else if (c.tip === "plita") {
+      // corp jos cu sertar + plită neagră în blat + hotă deasupra
+      box(w - 0.03, Hb - 0.03, 0.018, xc, Hb / 2, frontZ, matFront);
+      const plita = box(w * 0.85, 0.02, Db * 0.7, xc, Hb + gBlat + 0.011, 0.02,
+        new THREE.MeshStandardMaterial({ color: 0x141414, roughness: 0.2, metalness: 0.4 }));
+      // 4 arzătoare (cercuri sugerați prin cilindri joși)
+      for (const [ox, oz] of [[-0.15, -0.12], [0.15, -0.12], [-0.15, 0.12], [0.15, 0.12]]) {
+        const arz = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.004, 20),
+          new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.4, metalness: 0.5 }));
+        arz.position.set(xc + ox, Hb + gBlat + 0.023, 0.02 + oz); g.add(arz);
+      }
+      // hotă suspendată deasupra
+      const hota = box(w * 0.9, 0.12, Db * 0.6, xc, Hb + gBlat + 0.75, 0.05, matInox);
+      box(w * 0.35, 0.35, 0.1, xc, Hb + gBlat + 0.95, -0.1, matInox); // coș hotă
+    } else if (c.tip === "masina") {
+      // mașină vase — front inox cu panou de comandă sus
+      box(w - 0.03, Hb - 0.03, 0.018, xc, Hb / 2, frontZ, matInox);
+      box(w - 0.06, 0.05, 0.006, xc, Hb - 0.06, frontZ + 0.006,
+        new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3, metalness: 0.5 }));
+      box(0.15, 0.02, 0.02, xc, Hb - 0.14, frontZ + 0.012, matMet); // mâner bară
     } else if (c.tip === "colt") {
       // corp de colț: doar carcasă + o ușă îngustă pe diagonală (sugestie)
       box(w - 0.03, Hb - 0.03, 0.018, xc, Hb / 2, frontZ, matFront);
@@ -175,9 +203,22 @@ function buildBucatarie(corpuri, culoareFront, culoareBlat) {
     x += w;
   }
 
-  // blat continuu peste tot rândul
+  // blat continuu — dar întrerupt de electrocasnicele înalte (frigider).
+  // Desenăm segmente de blat între frigidere, peste corpurile joase.
   if (latTot > 0) {
-    box(latTot + 0.04, gBlat, Db + 0.02, 0, Hb + gBlat / 2, 0, matBlat);
+    let segStart = -latTot / 2, cursor = -latTot / 2;
+    const inchideSegment = (end) => {
+      if (end - segStart > 0.05) {
+        const segW = end - segStart;
+        box(segW + 0.02, gBlat, Db + 0.02, segStart + segW / 2, Hb + gBlat / 2, 0, matBlat);
+      }
+    };
+    for (const c of lista) {
+      const w = c.latime / 1000;
+      if (c.tip === "frigider") { inchideSegment(cursor); segStart = cursor + w; }
+      cursor += w;
+    }
+    inchideSegment(latTot / 2);
   }
 
   return g;

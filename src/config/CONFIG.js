@@ -84,6 +84,9 @@ export const CONFIG_TAMPLAR = {
       chiuveta: { nume: "Chiuvetă",     latime: 800, tip: "chiuveta", pretEur: 210 },
       cuptor:   { nume: "Cuptor",       latime: 600, tip: "cuptor",   pretEur: 320 },
       colt:     { nume: "Colț",         latime: 900, tip: "colt",     pretEur: 240 },
+      frigider: { nume: "Frigider",     latime: 600, tip: "frigider", pretEur: 0, electrocasnic: true },
+      plita:    { nume: "Plită + hotă", latime: 600, tip: "plita",    pretEur: 0, electrocasnic: true },
+      masina:   { nume: "Mașină vase",  latime: 600, tip: "masina",   pretEur: 0, electrocasnic: true },
     },
     inaltimeBaza: 850,   // mm — înălțimea standard corp bază (fără blat)
     adancimeBaza: 600,   // mm
