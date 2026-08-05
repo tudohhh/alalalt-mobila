@@ -6,7 +6,7 @@ import { CONFIG_TAMPLAR as C } from "../../config/CONFIG.js";
 // deasupra. corpuri = array de chei din C.bucatarie.corpuriBaza.
 // API: <ScenaBucatarie corpuri={["sertare","usi2",...]} culoareFront onReady/>
 
-export default function ScenaBucatarie({ corpuri, culoareFront = "#e8e4dd", culoareBlat = "#3a3632", onReady }) {
+export default function ScenaBucatarie({ corpuri, culoareFront = "#e8e4dd", culoareBlat = "#3a3632", suspendate = true, onReady }) {
   const mount = useRef(null);
   const sceneRef = useRef(null), contentRef = useRef(null), camState = useRef(null), rndRef = useRef(null);
 
@@ -95,21 +95,20 @@ export default function ScenaBucatarie({ corpuri, culoareFront = "#e8e4dd", culo
     const scene = sceneRef.current; if (!scene) return;
     const rebuild = () => {
       if (contentRef.current) { scene.remove(contentRef.current); disposeGroup(contentRef.current); }
-      const g = buildBucatarie(corpuri, culoareFront, culoareBlat);
+      const g = buildBucatarie(corpuri, culoareFront, culoareBlat, suspendate);
       scene.add(g); contentRef.current = g;
-      // centrez camera pe lățimea totală
       const S = camState.current;
-      if (S) { S.target.set(0, 0.9, 0); S.r = Math.max(4, (g.userData.latimeTotala || 3) * 1.1 + 1.5); }
+      if (S) { S.target.set(0, 1.15, 0); S.r = Math.max(4, (g.userData.latimeTotala || 3) * 1.1 + 1.5); }
     };
     const id = setTimeout(rebuild, 60);
     return () => clearTimeout(id);
-  }, [JSON.stringify(corpuri), culoareFront, culoareBlat]);
+  }, [JSON.stringify(corpuri), culoareFront, culoareBlat, suspendate]);
 
   return <div ref={mount} style={{ width: "100%", height: "100%" }} />;
 }
 
 // ——— construcția bucătăriei ———
-function buildBucatarie(corpuri, culoareFront, culoareBlat) {
+function buildBucatarie(corpuri, culoareFront, culoareBlat, suspendate = true) {
   const g = new THREE.Group();
   const cat = C.bucatarie.corpuriBaza;
   const Hb = (C.bucatarie.inaltimeBaza || 850) / 1000;
@@ -219,6 +218,33 @@ function buildBucatarie(corpuri, culoareFront, culoareBlat) {
       cursor += w;
     }
     inchideSegment(latTot / 2);
+  }
+
+  // CORPURI SUSPENDATE: dulăpioare sus, pe perete, deasupra corpurilor joase.
+  // Nu peste frigider (deja înalt) și nu peste plită (acolo e hota).
+  if (suspendate) {
+    const ySus = Hb + gBlat + 0.55;      // spațiul de faianță între blat și sus
+    const Hsus = 0.72, Dsus = Db * 0.62; // corpuri sus mai puțin adânci
+    let cx = -latTot / 2;
+    for (const c of lista) {
+      const w = c.latime / 1000;
+      const xc = cx + w / 2;
+      const areSus = c.tip !== "frigider" && c.tip !== "plita" && c.tip !== "colt";
+      if (areSus) {
+        const fz = Dsus / 2 + 0.004;
+        // carcasă sus
+        box(w - 0.02, Hsus, Dsus, xc, ySus + Hsus / 2, -(Db - Dsus) / 2, matCorp);
+        // uși sus (1-2)
+        const nu = w > 0.5 ? 2 : 1, uw = (w - 0.03) / nu;
+        for (let u = 0; u < nu; u++) {
+          const ux = xc - w / 2 + 0.015 + uw / 2 + u * uw;
+          box(uw - 0.01, Hsus - 0.02, 0.018, ux, ySus + Hsus / 2, -(Db - Dsus) / 2 + fz, matFront);
+          const hSide = nu === 2 ? (u === 0 ? 1 : -1) : 1;
+          box(0.012, 0.12, 0.02, ux + hSide * (uw / 2 - 0.03), ySus + 0.08, -(Db - Dsus) / 2 + fz + 0.012, matMet);
+        }
+      }
+      cx += w;
+    }
   }
 
   return g;

@@ -22,6 +22,7 @@ export default function Bucatarie({ inapoi }){
   const [insulaMl,setInsulaMl]=useState(1.8);
   const [optSel,setOptSel]=useState([]);
   const [corpuri,setCorpuri]=useState(["sertare","usi2","chiuveta","usi2","cuptor"]);
+  const [suspendate,setSuspendate]=useState(true);
   const [faza,setFaza]=useState("config");
 
   const nSeg=FORME[forma].segmente;
@@ -53,10 +54,14 @@ export default function Bucatarie({ inapoi }){
         {/* NEXT LEVEL: compunere pe corpuri reale + 3D */}
         <div style={{...card,marginBottom:16,padding:0,overflow:"hidden"}}>
           <div style={{height:340,background:"#efece7"}}>
-            <ScenaBucatarie corpuri={corpuri}/>
+            <ScenaBucatarie corpuri={corpuri} suspendate={suspendate}/>
           </div>
           <div style={{padding:"14px 16px"}}>
             <Sec>Compune bucătăria din corpuri</Sec>
+            <label style={{display:"flex",alignItems:"center",gap:8,fontSize:12.5,marginBottom:10,cursor:"pointer"}}>
+              <input type="checkbox" checked={suspendate} onChange={e=>setSuspendate(e.target.checked)}/>
+              Corpuri suspendate (dulăpioare sus pe perete)
+            </label>
             {/* rândul de corpuri adăugate */}
             <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:10}}>
               {corpuri.map((k,i)=>(
