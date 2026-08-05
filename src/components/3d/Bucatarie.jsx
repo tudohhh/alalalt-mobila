@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import { CONFIG_TAMPLAR as C } from "../../config/CONFIG.js";
 import { calculeazaBucatarie } from "../../utils/calcul.js";
 import Formular from "../ui/Formular.jsx";
+import ScenaBucatarie from "./ScenaBucatarie.jsx";
 
 const eur=n=>Math.round(n).toLocaleString("ro-RO")+" €";
 const lei=n=>Math.round(n).toLocaleString("ro-RO")+" lei";
@@ -20,6 +21,7 @@ export default function Bucatarie({ inapoi }){
   const [insula,setInsula]=useState(false);
   const [insulaMl,setInsulaMl]=useState(1.8);
   const [optSel,setOptSel]=useState([]);
+  const [corpuri,setCorpuri]=useState(["sertare","usi2","chiuveta","usi2","cuptor"]);
   const [faza,setFaza]=useState("config");
 
   const nSeg=FORME[forma].segmente;
@@ -47,6 +49,39 @@ export default function Bucatarie({ inapoi }){
         <button onClick={inapoi} style={{fontSize:13,color:"#a37e4a",background:"none",border:"none",cursor:"pointer",fontWeight:600,marginBottom:6}}>&larr; alt tip</button>
         <h1 style={{fontSize:24,fontWeight:800,margin:"0 0 4px"}}>Bucătărie — configurator</h1>
         <p style={{fontSize:12.5,color:"#8a8378",margin:"0 0 14px"}}>Estimare pe metru liniar. Standardul include: {C.bucatarie.standardInclude}.</p>
+
+        {/* NEXT LEVEL: compunere pe corpuri reale + 3D */}
+        <div style={{...card,marginBottom:16,padding:0,overflow:"hidden"}}>
+          <div style={{height:340,background:"#efece7"}}>
+            <ScenaBucatarie corpuri={corpuri}/>
+          </div>
+          <div style={{padding:"14px 16px"}}>
+            <Sec>Compune bucătăria din corpuri</Sec>
+            {/* rândul de corpuri adăugate */}
+            <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:10}}>
+              {corpuri.map((k,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:4,padding:"5px 8px",borderRadius:8,background:"#faf6ef",border:"1px solid #e3ded5",fontSize:11.5}}>
+                  <span style={{fontWeight:600}}>{C.bucatarie.corpuriBaza[k]?.nume||k}</span>
+                  <span style={{color:"#a8a29e",fontSize:10}}>{C.bucatarie.corpuriBaza[k]?.latime}mm</span>
+                  <button onClick={()=>setCorpuri(corpuri.filter((_,j)=>j!==i))} style={{border:"none",background:"none",cursor:"pointer",color:"#c0392b",fontWeight:700,fontSize:13,lineHeight:1,padding:0}}>×</button>
+                </div>
+              ))}
+              {!corpuri.length && <span style={{fontSize:11.5,color:"#a8a29e"}}>Adaugă corpuri mai jos ↓</span>}
+            </div>
+            {/* butoane de adăugare din catalog */}
+            <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+              {Object.entries(C.bucatarie.corpuriBaza).map(([k,c])=>(
+                <button key={k} onClick={()=>setCorpuri([...corpuri,k])}
+                  style={{padding:"7px 11px",borderRadius:9,cursor:"pointer",fontSize:11.5,fontWeight:600,background:"#fff",color:"#3a3630",border:"1px solid #d8d2c6"}}>
+                  + {c.nume} <span style={{color:"#a8a29e",fontSize:10}}>{c.latime}mm</span>
+                </button>
+              ))}
+            </div>
+            <div style={{fontSize:11,color:"#8a8378",marginTop:10}}>
+              Lățime totală: {(corpuri.reduce((s,k)=>s+(C.bucatarie.corpuriBaza[k]?.latime||0),0)/1000).toFixed(2)} m · {corpuri.length} corpuri
+            </div>
+          </div>
+        </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 320px",gap:16}}>
           <div style={{display:"flex",flexDirection:"column",gap:14}}>
             <div style={card}>

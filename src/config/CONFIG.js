@@ -75,6 +75,19 @@ export const CONFIG_TAMPLAR = {
   },
 
   bucatarie: {
+    // Catalog de corpuri-bază (module standard, ca la IKEA): fiecare are lățime
+    // reală (mm) și un tip vizual. Bucătăria se compune înșiruind corpuri.
+    corpuriBaza: {
+      sertare:  { nume: "Sertare",      latime: 600, tip: "sertare",  pretEur: 180 },
+      usi2:     { nume: "2 uși",        latime: 800, tip: "usi",      pretEur: 150 },
+      usa1:     { nume: "1 ușă",        latime: 400, tip: "usi",      pretEur: 95  },
+      chiuveta: { nume: "Chiuvetă",     latime: 800, tip: "chiuveta", pretEur: 210 },
+      cuptor:   { nume: "Cuptor",       latime: 600, tip: "cuptor",   pretEur: 320 },
+      colt:     { nume: "Colț",         latime: 900, tip: "colt",     pretEur: 240 },
+    },
+    inaltimeBaza: 850,   // mm — înălțimea standard corp bază (fără blat)
+    adancimeBaza: 600,   // mm
+    grosimeBlat: 40,     // mm
     pretMlStandardEur: 1200,
     standardInclude: "blat+contrablat termo 38/10mm, fronturi MDF vopsit drept 1 fata, 4 sertare, balamale soft-close, sertare metalice soft-close, jolly premium, scurgator inox, sertar tacamuri, orice depozitare",
     optionale: {
