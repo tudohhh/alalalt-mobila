@@ -93,7 +93,21 @@ export default function Bucatarie({ inapoi }){
               <Sec>Forma bucătăriei</Sec>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}}>
                 {Object.entries(FORME).map(([k,f])=>(
-                  <button key={k} onClick={()=>setForma(k)} style={{padding:"10px 4px",borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:600,border:forma===k?"2px solid #a37e4a":"1px solid #e3ded5",background:forma===k?"#faf6ef":"#fff",color:"#2a2622"}}>{f.nume}</button>
+                  <button key={k} onClick={()=>{
+                    setForma(k);
+                    // Leagă forma de scena 3D: L/U introduc colț(uri), dreapta le scoate.
+                    const faraColt=corpuri.filter(x=>x!=="colt");
+                    if(k==="dreapta") setCorpuri(faraColt);
+                    else if(k==="L"){
+                      // un colț la mijloc
+                      const mij=Math.ceil(faraColt.length/2);
+                      setCorpuri([...faraColt.slice(0,mij),"colt",...faraColt.slice(mij)]);
+                    } else if(k==="U"){
+                      // două colțuri (la ~1/3 și ~2/3) — forma U
+                      const a=Math.ceil(faraColt.length/3), b=Math.ceil(2*faraColt.length/3);
+                      setCorpuri([...faraColt.slice(0,a),"colt",...faraColt.slice(a,b),"colt",...faraColt.slice(b)]);
+                    }
+                  }} style={{padding:"10px 4px",borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:600,border:forma===k?"2px solid #a37e4a":"1px solid #e3ded5",background:forma===k?"#faf6ef":"#fff",color:"#2a2622"}}>{f.nume}</button>
                 ))}
               </div>
               <Sec>Dimensiuni (metri liniari pe fiecare perete)</Sec>

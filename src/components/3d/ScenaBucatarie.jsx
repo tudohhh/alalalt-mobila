@@ -132,28 +132,26 @@ function buildBucatarie(corpuri, culoareFront, culoareBlat, suspendate = true) {
     me.position.set(x, y, z); me.castShadow = true; me.receiveShadow = true; dest.add(me); return me;
   };
 
-  // Rândul 1 se așază pe X. La corpul "colt", următoarele corpuri trec pe un
-  // al doilea perete: un sub-grup rotit 90° și poziționat la colț (forma L).
+  // Rândul se așază pe X. La fiecare corp "colt", pivotăm pe un nou perete
+  // (rotit -90° cumulativ): un colț = L, două colțuri = U.
   let x = -latTot / 2;
-  let dupaColt = false, xColt = 0;
+  let nrColturi = 0;
   for (const c of lista) {
     const w = c.latime / 1000;
 
-    // La întâlnirea colțului: pivotăm — desenăm colțul pe rândul curent, apoi
-    // pornim un sub-grup pentru al doilea perete.
-    if (c.tip === "colt" && !dupaColt) {
+    if (c.tip === "colt") {
       const xc = x + w / 2;
       const frontZ = Db / 2 + 0.004;
       box(w, Hb, Db, xc, Hb / 2, 0, matCorp);
       box(w - 0.03, Hb - 0.03, 0.018, xc, Hb / 2, frontZ, matFront);
-      // pornim al doilea perete: sub-grup rotit 90° în jurul colțului
-      const rand2 = new THREE.Group();
-      rand2.position.set(x + w, 0, 0);      // capătul colțului
-      rand2.rotation.y = -Math.PI / 2;       // cotim 90° (spre spate)
-      g.add(rand2);
-      dest = rand2;
-      dupaColt = true;
-      x = 0;                                 // în sub-grup pornim de la 0
+      // pornim un nou perete: sub-grup rotit -90° la capătul colțului curent
+      const randNou = new THREE.Group();
+      randNou.position.set(x + w, 0, 0);
+      randNou.rotation.y = -Math.PI / 2;
+      dest.add(randNou);       // fiecare perete nou pleacă din cel curent (cumulativ)
+      dest = randNou;
+      nrColturi++;
+      x = 0;
       continue;
     }
 
